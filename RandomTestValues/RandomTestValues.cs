@@ -77,7 +77,7 @@ namespace RandomTestValues
                 // properties[0].SetValue(genericObject, Convert.ChangeType(null, properties[0].PropertyType), null);
                 return genericObject;
             }
-
+             
             foreach (var prop in properties)
             {
                 if (prop.PropertyType == typeof(string))
