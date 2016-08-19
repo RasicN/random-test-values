@@ -71,7 +71,7 @@ namespace RandomTestValues
 
             if (properties.Length == 0)
             {
-                // properties[0].SetValue(genericObject, Convert.ChangeType(null, properties[0].PropertyType), null);
+                // Prevent infinite loop when called recursively
                 return genericObject;
             }
              
