@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace RandomTestValues
 {
@@ -23,7 +24,6 @@ namespace RandomTestValues
                 typeof(ulong),
                 typeof(ushort)
             };
-
 
         public static Random _Random = new Random();
 
@@ -228,6 +228,15 @@ namespace RandomTestValues
             }
 
             return genericObject;
+        }
+
+        public static T Enum<T>() where T : struct, IConvertible
+        {
+            var fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
+
+            var index = _Random.Next(fields.Length);
+
+            return (T) System.Enum.Parse(typeof(T), fields[index].Name, false);
         }
     }
 }

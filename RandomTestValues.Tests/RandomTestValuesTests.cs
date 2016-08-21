@@ -286,6 +286,30 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
+        public void RandomEnumShouldReturnAnEmumOfTheCorrectType()
+        {
+            var randomEnum = RandomTestValues.Enum<TestEnum>();
+
+            randomEnum.ShouldBeType<TestEnum>();
+        }
+
+        [TestMethod]
+        public void RandomEnumShouldHitAllTheValuesOfTheEnumIfIteratedEnough()
+        {
+            var randomEnums = new List<TestEnum>();
+
+            for (int i = 0; i < 50; i++)
+            {
+                randomEnums.Add(RandomTestValues.Enum<TestEnum>());
+            }
+
+            randomEnums.Where(x => x == TestEnum.More).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Most).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Mostest).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Mostestest).ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
         public void RandomObjectOfSupportedValuesWillBePopulated()
         {
             var testClass = RandomTestValues.Object<TestObject>();
