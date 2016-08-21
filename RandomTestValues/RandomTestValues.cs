@@ -180,6 +180,7 @@ namespace RandomTestValues
 
         public static decimal Decimal()
         {
+            return (decimal)_Random.NextDouble();
         }
 
         public static T Object<T>() where T : new()
