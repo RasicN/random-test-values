@@ -204,6 +204,13 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
+        public void RandomLongShouldNotThrowAnExceptionIfANegativeNumberIsPassed()
+        {
+            // this creates an overflow in the ulong value. Should we Math.abs(-1000) it? Or is the idea of passing a negative number nonsensical? 
+            var randomBrendan = RandomTestValues.Long(-1000);
+        }
+
+        [TestMethod]
         public void RandomULongShouldProductUniqueNumbersEachTimeItIsCalled()
         {
             var randomULong1 = RandomTestValues.ULong();
@@ -266,14 +273,14 @@ namespace RandomTestValues.Tests
         {
             var randomBools = new List<bool>();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 randomBools.Add(RandomTestValues.Bool());
             }
 
             var listOfTrues = randomBools.Where(x => x == true);
 
-            listOfTrues.Count().ShouldBeInRange(15, 35);
+            listOfTrues.Count().ShouldBeInRange(400, 600);
         }
 
         [TestMethod]
