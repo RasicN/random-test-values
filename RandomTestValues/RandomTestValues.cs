@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace RandomTestValues
 {
     public static class RandomTestValues
     {
-        public static ICollection<Type> SupportedTypes =>
-            new List<Type>
+        public static Dictionary<Type, Func<Type, object>> SupportedTypes =>
+            new Dictionary<Type, Func<Type, object>>
             {
-                typeof(int),
-                typeof(string),
-                typeof(decimal),
-                typeof(double),
-                typeof(bool),
-                typeof(byte),
-                typeof(char),
-                typeof(float),
-                typeof(long),
-                typeof(sbyte),
-                typeof(short),
-                typeof(uint),
-                typeof(ulong),
-                typeof(ushort)
+                {typeof(int), type => Int()},
+                {typeof(string), type => String()},
+                {typeof(decimal), type => Decimal()},
+                {typeof(double), type => Double()},
+                {typeof(bool), type => Bool()},
+                {typeof(byte), type => Byte()},
+                {typeof(char), type => Char()},
+                {typeof(float), type => Float()},
+                {typeof(long), type => Long()},
+                {typeof(sbyte), type => SByte()},
+                {typeof(short), type => Short()},
+                {typeof(uint), type => UInt()},
+                {typeof(ulong), type => ULong()},
+                {typeof(ushort), type => UShort()}
             };
 
         public static Random _Random = new Random();
@@ -197,24 +198,9 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
-                // (Design question) I wonder if we could do this some other way... maybe we could make an overload method named Act(Type) that all of our primitive type methods use
-                // then we would just call prop.SetValue(genericObject, Convert.ChangeType(Act(), prop.PropertyType, null); I think that might work... it would eliminate
-                // this giant if/else chain which will become unmanagable when we support all primitive types. 
-                if (prop.PropertyType == typeof(string))
+                if (SupportedTypes.ContainsKey(prop.PropertyType))
                 {
-                    prop.SetValue(genericObject, Convert.ChangeType(String(), prop.PropertyType), null);
-                }
-                else if (prop.PropertyType == typeof(decimal))
-                {
-                    prop.SetValue(genericObject, Convert.ChangeType(Decimal(), prop.PropertyType), null);
-                }
-                else if(prop.PropertyType == typeof(int))
-                {
-                    prop.SetValue(genericObject, Convert.ChangeType(Int(), prop.PropertyType), null);
-                }
-                else if (prop.PropertyType == typeof(double))
-                {
-                    prop.SetValue(genericObject, Convert.ChangeType(Double(), prop.PropertyType), null);
+                    prop.SetValue(genericObject, Convert.ChangeType(SupportedTypes[prop.PropertyType].Invoke(prop.PropertyType), prop.PropertyType), null);
                 }
                 else
                 {

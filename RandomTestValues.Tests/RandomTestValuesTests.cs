@@ -17,18 +17,6 @@ namespace RandomTestValues.Tests
 
             randomString1.ShouldNotEqual(randomString2);
         }
-
-        [TestMethod]
-        [DataRow(2)]
-        [DataRow(60)]
-        [DataRow(600)]
-        [DataRow(6000)]
-        public void RandomStringWithALengthPassedInShouldReturnAStringOfThatLength(int expectedStringLength)
-        {
-            var randomString = RandomTestValues.String(expectedStringLength);
-
-            randomString.Length.ShouldEqual(expectedStringLength);
-        }
         
         [TestMethod]
         public void RandomIntShouldReturnSomethingDifferentEveryTimeItsCalled()
