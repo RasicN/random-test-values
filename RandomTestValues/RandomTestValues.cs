@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace RandomTestValues
 {
     public static class RandomTestValues
     {
-        public static ICollection<Type> SupportedTypes =>
+        public static IReadOnlyCollection<Type> SupportedTypes =>
             new List<Type>
             {
                 typeof(int),
@@ -183,6 +184,15 @@ namespace RandomTestValues
             return (decimal)_Random.NextDouble();
         }
 
+        public static T Enum<T>() where T : struct, IConvertible
+        {
+            var fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
+
+            var index = _Random.Next(fields.Length);
+
+            return (T)System.Enum.Parse(typeof(T), fields[index].Name, false);
+        }
+
         public static T Object<T>() where T : new()
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
@@ -197,9 +207,6 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
-                // (Design question) I wonder if we could do this some other way... maybe we could make an overload method named Act(Type) that all of our primitive type methods use
-                // then we would just call prop.SetValue(genericObject, Convert.ChangeType(Act(), prop.PropertyType, null); I think that might work... it would eliminate
-                // this giant if/else chain which will become unmanagable when we support all primitive types. 
                 if (prop.PropertyType == typeof(string))
                 {
                     prop.SetValue(genericObject, Convert.ChangeType(String(), prop.PropertyType), null);
@@ -230,13 +237,52 @@ namespace RandomTestValues
             return genericObject;
         }
 
-        public static T Enum<T>() where T : struct, IConvertible
+        public static T ObjectExperiment<T>() where T : new()
         {
-            var fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
+            var genericObject = (T)Activator.CreateInstance(typeof(T));
 
-            var index = _Random.Next(fields.Length);
+            var properties = typeof(T).GetProperties();
 
-            return (T) System.Enum.Parse(typeof(T), fields[index].Name, false);
+            if (properties.Length == 0)
+            {
+                // Prevent infinite loop when called recursively
+                return genericObject;
+            }
+
+            foreach (var prop in properties)
+            {
+                if (MethodsDictorary.ContainsKey(prop.PropertyType))
+                {
+                    prop.SetValue(genericObject, Act(prop.PropertyType), null);
+                }
+                else
+                {
+                    var method =
+                        typeof(RandomTestValues).GetMethod("Object")
+                            .MakeGenericMethod(prop.PropertyType)
+                            .Invoke(null, new object[] { });
+
+                    prop.SetValue(genericObject, Convert.ChangeType(method, prop.PropertyType), null);
+                }
+            }
+
+            return genericObject;
+        }
+
+        private static IReadOnlyDictionary<Type, LambdaExpression> MethodsDictorary =>
+            new Dictionary<Type, LambdaExpression> 
+            {
+                {typeof(string), (Expression<Func<string>>)(() => String()) },
+                {typeof(double), (Expression<Func<double>>)(() => Double()) },
+                {typeof(decimal), (Expression<Func<decimal>>)(() => Decimal()) },
+                {typeof(int), (Expression<Func<int>>)(() => Int(int.MaxValue)) }
+            };
+
+        private static object Act(Type propertyType)
+        {
+            var method = MethodsDictorary[propertyType];
+
+            return Convert.ChangeType(method.Compile().DynamicInvoke(), propertyType);
         }
     }
 }

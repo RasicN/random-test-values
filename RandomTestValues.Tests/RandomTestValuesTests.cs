@@ -335,5 +335,25 @@ namespace RandomTestValues.Tests
 
             testClass.TestObject2.RObject.ShouldBeType<object>();
         }
+
+        [TestMethod]
+        public void RandomObjectExperimentOfSupportedValuesWillBePopulated()
+        {
+            var testClass = RandomTestValues.ObjectExperiment<TestObject>();
+
+            testClass.RString.ShouldNotBeDefault();
+            testClass.RDecimal.ShouldNotBeDefault();
+            testClass.RDouble.ShouldNotBeDefault();
+            testClass.RInt.ShouldNotBeDefault();
+            testClass.TestObject2.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
+        public void RandomObjectExperiemntOfSupportedValuesWillReturnNullForUnDeterminable()
+        {
+            var testClass = RandomTestValues.ObjectExperiment<TestObject>();
+
+            testClass.TestObject2.RObject.ShouldBeType<object>();
+        }
     }
 }
