@@ -12,7 +12,8 @@ namespace RandomTestValues.Tests
         public int RInt2 { get; set; }
         public string RString2 { get; set; }
         public decimal RDecimal2{ get; set; }
-        public double RDouble2{ get; set; }
+        public double RDouble2 { get; set; }
+        public TestEnum REnum { get; set; }
         public TestObject2 TestObject2 { get; set; }
         public TestObject2 TestObject3 { get; set; }
         public List<double> RList { get; set; }

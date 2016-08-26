@@ -204,6 +204,15 @@ namespace RandomTestValues
                 {
                     prop.SetValue(genericObject, Convert.ChangeType(SupportedTypes[prop.PropertyType].Invoke(prop.PropertyType), prop.PropertyType), null);
                 }
+                else if (prop.PropertyType.IsEnum)
+                {
+                    var enumMethod =
+                        typeof(RandomTestValues).GetMethod("Enum")
+                            .MakeGenericMethod(prop.PropertyType)
+                            .Invoke(null, new object[] {});
+
+                    prop.SetValue(genericObject, enumMethod, null);
+                }
                 else if (IsCollection(prop))
                 {
                     // WARNING: UGLY CODE AHEAD

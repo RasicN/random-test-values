@@ -311,6 +311,12 @@ namespace RandomTestValues.Tests
             testClass.RList.ShouldNotBeEmpty();
             testClass.RList2.ShouldNotBeEmpty();
             testClass.TestObject2.ShouldNotBeDefault();
+
+            Should.Core.Assertions.Assert.True(
+                (int) testClass.REnum == (int) TestEnum.More
+                || (int) testClass.REnum == (int) TestEnum.Most
+                || (int) testClass.REnum == (int) TestEnum.Mostest
+                || (int) testClass.REnum == (int) TestEnum.Mostestest);
         }
 
         [TestMethod]
