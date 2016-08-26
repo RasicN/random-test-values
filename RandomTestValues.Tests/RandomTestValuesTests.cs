@@ -306,6 +306,10 @@ namespace RandomTestValues.Tests
             testClass.RDecimal.ShouldNotBeDefault();
             testClass.RDouble.ShouldNotBeDefault();
             testClass.RInt.ShouldNotBeDefault();
+            testClass.RCollection.ShouldNotBeEmpty();
+            testClass.RCollection2.ShouldNotBeEmpty();
+            testClass.RList.ShouldNotBeEmpty();
+            testClass.RList2.ShouldNotBeEmpty();
             testClass.TestObject2.ShouldNotBeDefault();
         }
 
@@ -315,6 +319,27 @@ namespace RandomTestValues.Tests
             var testClass = RandomTestValues.Object<TestObject>();
 
             testClass.TestObject2.RObject.ShouldBeType<object>();
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentCollectionEachTime()
+        {
+            var stringCollection1 = RandomTestValues.Collection<string>();
+            var stringCollection2 = RandomTestValues.Collection<string>();
+
+            var intCollection1 = RandomTestValues.Collection<int>();
+            var intCollection2 = RandomTestValues.Collection<int>();
+
+            stringCollection1.ShouldNotEqual(stringCollection2);
+            intCollection1.ShouldNotEqual(intCollection2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomCollectionOfTheSpecifiedSize()
+        {
+            var stringCollection = RandomTestValues.Collection<string>(25);
+            
+            stringCollection.Count.ShouldEqual(25);
         }
     }
 }

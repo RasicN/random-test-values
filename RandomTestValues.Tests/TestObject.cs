@@ -1,4 +1,7 @@
-﻿namespace RandomTestValues.Tests
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+namespace RandomTestValues.Tests
 {
     public class TestObject
     {
@@ -12,5 +15,9 @@
         public double RDouble2{ get; set; }
         public TestObject2 TestObject2 { get; set; }
         public TestObject2 TestObject3 { get; set; }
+        public List<double> RList { get; set; }
+        public IList<string> RList2 { get; set; }
+        public Collection<int> RCollection { get; set; }
+        public ICollection<bool> RCollection2 { get; set; }
     }
 }

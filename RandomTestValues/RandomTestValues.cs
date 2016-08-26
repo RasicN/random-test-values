@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
@@ -171,7 +173,7 @@ namespace RandomTestValues
         {
             var randomNumber = Int(2);
 
-            if(randomNumber == 0)
+            if (randomNumber == 0)
             {
                 return false;
             }
@@ -202,6 +204,34 @@ namespace RandomTestValues
                 {
                     prop.SetValue(genericObject, Convert.ChangeType(SupportedTypes[prop.PropertyType].Invoke(prop.PropertyType), prop.PropertyType), null);
                 }
+                else if (IsCollection(prop))
+                {
+                    // WARNING: UGLY CODE AHEAD
+                    var typeOfList = prop.PropertyType.GetGenericArguments();
+
+                    object listMethod = null;
+
+                    Type type = prop.PropertyType;
+                    if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(IList<>)))
+                    {
+                        listMethod =
+                        typeof(RandomTestValues).GetMethod("List")
+                            .MakeGenericMethod(typeOfList)
+                            .Invoke(null, new object[] { null });
+                    }
+                    else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>) || type.GetGenericTypeDefinition() == typeof(ICollection<>)))
+                    {
+                        listMethod =
+                        typeof(RandomTestValues).GetMethod("Collection")
+                            .MakeGenericMethod(typeOfList)
+                            .Invoke(null, new object[] { null });
+                    }
+
+                    if (listMethod != null)
+                    {
+                        prop.SetValue(genericObject, listMethod, null);
+                    }
+                }
                 else
                 {
                     var method =
@@ -215,14 +245,51 @@ namespace RandomTestValues
 
             return genericObject;
         }
-
+        
         public static T Enum<T>() where T : struct, IConvertible
         {
             var fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
 
             var index = _Random.Next(fields.Length);
 
-            return (T) System.Enum.Parse(typeof(T), fields[index].Name, false);
+            return (T)System.Enum.Parse(typeof(T), fields[index].Name, false);
+        }
+
+        public static IList<T> List<T>(int? optionalLength = null)
+        {
+            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
+
+            var randomList = new List<T>();
+
+            var type = typeof(T);
+
+            for (var i = 0; i < numberOfItems; i++)
+            {
+                randomList.Add((T)SupportedTypes[type].Invoke(type));
+            }
+
+            return randomList;
+        }
+
+        public static ICollection<T> Collection<T>(int? optionalLength = null)
+        {
+            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
+
+            var randomList = new Collection<T>();
+
+            var type = typeof(T);
+
+            for (var i = 0; i < numberOfItems; i++)
+            {
+                randomList.Add((T)SupportedTypes[type].Invoke(type));
+            }
+
+            return randomList;
+        }
+        
+        private static bool IsCollection(PropertyInfo prop)
+        {
+            return prop.PropertyType.GetInterface("ICollection") != null || (prop.PropertyType.IsGenericType && (prop.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>) || prop.PropertyType.GetGenericTypeDefinition() == typeof(IList<>)));
         }
     }
 }
