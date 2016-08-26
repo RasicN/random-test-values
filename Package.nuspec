@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>RandomTestValues</id>
+    <version>1.0.2</version>
+    <authors>Joe Cisar</authors>
+    <owners>Joe Cisar</owners>
+    <licenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/RasicN/random-test-values</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This project is to speed up and clean up unit testing by returning random values.</description>
+    <releaseNotes>First Release</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>Unit-Testing TDD</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="RandomTestValues\bin\Release\RandomTestValues.dll" target="lib\RandomTestValues.dll" />
+  </files>
+</package>

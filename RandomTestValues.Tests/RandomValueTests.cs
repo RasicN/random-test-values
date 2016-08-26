@@ -7,13 +7,13 @@ using System.Linq;
 namespace RandomTestValues.Tests
 {
     [TestClass]
-    public class RandomTestValuesTests
+    public class RandomValueTests
     {
         [TestMethod]
         public void RandomStringShouldReturnSomethingDifferentEveryTimeItsCalled()
         {
-            var randomString1 = RandomTestValues.String();
-            var randomString2 = RandomTestValues.String();
+            var randomString1 = RandomValue.String();
+            var randomString2 = RandomValue.String();
 
             randomString1.ShouldNotEqual(randomString2);
         }
@@ -21,8 +21,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomIntShouldReturnSomethingDifferentEveryTimeItsCalled()
         {
-            var randomInt1 = RandomTestValues.Int();
-            var randomInt2 = RandomTestValues.Int();
+            var randomInt1 = RandomValue.Int();
+            var randomInt2 = RandomValue.Int();
 
             randomInt1.ShouldNotEqual(randomInt2);
         }
@@ -30,7 +30,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomIntShouldNotExceedMaximumValuePassedIn()
         {
-            var randomInt = RandomTestValues.Int(4);
+            var randomInt = RandomValue.Int(4);
 
             randomInt.ShouldBeInRange(0, 4);
         }
@@ -38,7 +38,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomIntShouldReturnAPositiveNumberIfANegativeMaxIsPassedIn()
         {
-            var randomInt = RandomTestValues.Int(-4);
+            var randomInt = RandomValue.Int(-4);
 
             randomInt.ShouldBeInRange(0, 4);
         }
@@ -51,7 +51,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 20; i++)
             {
-                randomBytes.Add(RandomTestValues.Byte());
+                randomBytes.Add(RandomValue.Byte());
             }
 
             var groupedbytes = randomBytes.GroupBy(x => x);
@@ -61,7 +61,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomByteShouldNotExceedTheMaximumValuePassedIn()
         {
-            var randomByte = RandomTestValues.Byte(5);
+            var randomByte = RandomValue.Byte(5);
 
             randomByte.ShouldBeInRange((byte)0, (byte)5);
         }
@@ -74,7 +74,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 20; i++)
             {
-                randomSBytes.Add(RandomTestValues.SByte());
+                randomSBytes.Add(RandomValue.SByte());
             }
 
             var groupedSbytes = randomSBytes.GroupBy(x => x);
@@ -84,7 +84,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomSByteShouldNotExceedTheMaximumValuePassedIn()
         {
-            var randomByte = RandomTestValues.SByte(3);
+            var randomByte = RandomValue.SByte(3);
 
             randomByte.ShouldBeInRange((sbyte)0, (sbyte)3);
         }
@@ -92,8 +92,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomUIntShouldNotReturnSomethingDifferentWithEachCall()
         {
-            var randomUInt1 = RandomTestValues.UInt();
-            var randomUInt2 = RandomTestValues.UInt();
+            var randomUInt1 = RandomValue.UInt();
+            var randomUInt2 = RandomValue.UInt();
 
             randomUInt1.ShouldNotEqual(randomUInt2);
         }
@@ -105,7 +105,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 50; i++)
             {
-                randomUints.Add(RandomTestValues.UInt());
+                randomUints.Add(RandomValue.UInt());
             }
 
             var uintsLargerThanMaxInt = randomUints.Where(x => x > int.MaxValue);
@@ -115,7 +115,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomUIntShouldReturnValueWithinTheRangeOf0AndTheMaxValueProvided()
         {
-            var randomUint = RandomTestValues.UInt(23);
+            var randomUint = RandomValue.UInt(23);
 
             randomUint.ShouldBeInRange((uint)0, (uint)23);
         }
@@ -123,8 +123,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomShortShouldReturnAUniqueNumberEachTimeItIsCalled()
         {
-            var randomShort1 = RandomTestValues.Short();
-            var randomShort2 = RandomTestValues.Short();
+            var randomShort1 = RandomValue.Short();
+            var randomShort2 = RandomValue.Short();
 
             randomShort1.ShouldNotEqual(randomShort2);
         }
@@ -132,7 +132,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomShortShouldRespectTheMaxValueSupplied()
         {
-            var randomShort = RandomTestValues.Short(12);
+            var randomShort = RandomValue.Short(12);
 
             randomShort.ShouldBeInRange((short)0, (short)12);
         }
@@ -140,8 +140,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomUShortShouldGenerateANewNumberEachTimeItIsCalled()
         {
-            var randomUShort1 = RandomTestValues.UShort();
-            var randomUShort2 = RandomTestValues.UShort();
+            var randomUShort1 = RandomValue.UShort();
+            var randomUShort2 = RandomValue.UShort();
 
             randomUShort1.ShouldNotEqual(randomUShort2);
         }
@@ -149,8 +149,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomLongShouldGenerateANewNumberEachTimeItIsCalled()
         {
-            var randomBrendan1 = RandomTestValues.Long();
-            var randomBrendan2 = RandomTestValues.Long();
+            var randomBrendan1 = RandomValue.Long();
+            var randomBrendan2 = RandomValue.Long();
 
             randomBrendan1.ShouldNotEqual(randomBrendan2);
         }
@@ -162,7 +162,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 50; i++)
             {
-                randomBrendans.Add(RandomTestValues.Long());
+                randomBrendans.Add(RandomValue.Long());
             }
 
             var brendansLargerThanMaxInt = randomBrendans.Where(x => x > int.MaxValue);
@@ -176,7 +176,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 50; i++)
             {
-                randomBrendans.Add(RandomTestValues.Long());
+                randomBrendans.Add(RandomValue.Long());
             }
 
             var brendansSmallerThan0 = randomBrendans.Where(x => x < 0);
@@ -186,7 +186,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomLongShouldRespectTheMaxValueSupplied()
         {
-            var randomBrendan = RandomTestValues.Long(3000);
+            var randomBrendan = RandomValue.Long(3000);
 
             randomBrendan.ShouldBeInRange(0, 3000);
         }
@@ -194,8 +194,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomULongShouldProductUniqueNumbersEachTimeItIsCalled()
         {
-            var randomULong1 = RandomTestValues.ULong();
-            var randomULong2 = RandomTestValues.ULong();
+            var randomULong1 = RandomValue.ULong();
+            var randomULong2 = RandomValue.ULong();
 
             randomULong1.ShouldNotEqual(randomULong2); 
         }
@@ -207,7 +207,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 50; i++)
             {
-                randomULongs.Add(RandomTestValues.ULong());
+                randomULongs.Add(RandomValue.ULong());
             }
 
             var numbersLargerThanMaxLong = randomULongs.Where(x => x > long.MaxValue);
@@ -217,7 +217,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomULongShouldRespectTheLargestNumberInput()
         {
-            var randomULong = RandomTestValues.ULong(2000);
+            var randomULong = RandomValue.ULong(2000);
 
             randomULong.ShouldBeInRange((ulong)0, (ulong)2000);
         }
@@ -225,8 +225,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomFloatShouldProductUniqueValuesEachTimeItIsCalled()
         {
-            var randomFloat1 = RandomTestValues.Float();
-            var randomFloat2 = RandomTestValues.Float();
+            var randomFloat1 = RandomValue.Float();
+            var randomFloat2 = RandomValue.Float();
 
             randomFloat1.ShouldNotEqual(randomFloat2);
         }
@@ -234,8 +234,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomDoubleShouldReturnSomethingDifferentEveryTimeItsCalled()
         {
-            var randomDouble1 = RandomTestValues.Double();
-            var randomDouble2 = RandomTestValues.Double();
+            var randomDouble1 = RandomValue.Double();
+            var randomDouble2 = RandomValue.Double();
 
             randomDouble1.ShouldNotEqual(randomDouble2);
         }
@@ -243,8 +243,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomCharProducesAUniqueValueEachTimeItIsCalled()
         {
-            var randomChar1 = RandomTestValues.Char();
-            var randomChar2 = RandomTestValues.Char();
+            var randomChar1 = RandomValue.Char();
+            var randomChar2 = RandomValue.Char();
 
             randomChar1.ShouldNotEqual(randomChar2);
         }
@@ -256,7 +256,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 50; i++)
             {
-                randomBools.Add(RandomTestValues.Bool());
+                randomBools.Add(RandomValue.Bool());
             }
 
             var listOfTrues = randomBools.Where(x => x == true);
@@ -267,8 +267,8 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomDecimalShouldReturnSomethingDifferentEveryTimeItsCalled()
         {
-            var randomDecimal1 = RandomTestValues.Decimal();
-            var randomDecimal2 = RandomTestValues.Decimal();
+            var randomDecimal1 = RandomValue.Decimal();
+            var randomDecimal2 = RandomValue.Decimal();
 
             randomDecimal1.ShouldNotEqual(randomDecimal2);
         }
@@ -276,7 +276,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomEnumShouldReturnAnEmumOfTheCorrectType()
         {
-            var randomEnum = RandomTestValues.Enum<TestEnum>();
+            var randomEnum = RandomValue.Enum<TestEnum>();
 
             randomEnum.ShouldBeType<TestEnum>();
         }
@@ -288,7 +288,7 @@ namespace RandomTestValues.Tests
 
             for (int i = 0; i < 50; i++)
             {
-                randomEnums.Add(RandomTestValues.Enum<TestEnum>());
+                randomEnums.Add(RandomValue.Enum<TestEnum>());
             }
 
             randomEnums.Where(x => x == TestEnum.More).ShouldNotBeEmpty();
@@ -300,21 +300,53 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomObjectOfSupportedValuesWillBePopulated()
         {
-            var testClass = RandomTestValues.Object<TestObject>();
+            var testClass = RandomValue.Object<TestObject>();
 
             testClass.RString.ShouldNotBeDefault();
             testClass.RDecimal.ShouldNotBeDefault();
             testClass.RDouble.ShouldNotBeDefault();
             testClass.RInt.ShouldNotBeDefault();
+            testClass.RCollection.ShouldNotBeEmpty();
+            testClass.RCollection2.ShouldNotBeEmpty();
+            testClass.RList.ShouldNotBeEmpty();
+            testClass.RList2.ShouldNotBeEmpty();
             testClass.TestObject2.ShouldNotBeDefault();
+            testClass.RTestObject2List.ShouldNotBeEmpty();
+
+            Should.Core.Assertions.Assert.True(
+                (int) testClass.REnum == (int) TestEnum.More
+                || (int) testClass.REnum == (int) TestEnum.Most
+                || (int) testClass.REnum == (int) TestEnum.Mostest
+                || (int) testClass.REnum == (int) TestEnum.Mostestest);
         }
 
         [TestMethod]
         public void RandomObjectOfSupportedValuesWillReturnNullForUnDeterminable()
         {
-            var testClass = RandomTestValues.Object<TestObject>();
+            var testClass = RandomValue.Object<TestObject>();
 
             testClass.TestObject2.RObject.ShouldBeType<object>();
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentCollectionEachTime()
+        {
+            var stringCollection1 = RandomValue.Collection<string>();
+            var stringCollection2 = RandomValue.Collection<string>();
+
+            var intCollection1 = RandomValue.Collection<int>();
+            var intCollection2 = RandomValue.Collection<int>();
+
+            stringCollection1.ShouldNotEqual(stringCollection2);
+            intCollection1.ShouldNotEqual(intCollection2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomCollectionOfTheSpecifiedSize()
+        {
+            var stringCollection = RandomValue.Collection<string>(25);
+            
+            stringCollection.Count.ShouldEqual(25);
         }
     }
 }
