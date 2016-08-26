@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>RandomTestValues</id>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <authors>Joe Cisar</authors>
     <owners>Joe Cisar</owners>
     <licenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</licenseUrl>
