@@ -2,6 +2,7 @@
 using RandomTestValues.Tests.ShouldExtensions;
 using Should;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace RandomTestValues.Tests
@@ -312,12 +313,25 @@ namespace RandomTestValues.Tests
             testClass.RList2.ShouldNotBeEmpty();
             testClass.TestObject2.ShouldNotBeDefault();
             testClass.RTestObject2List.ShouldNotBeEmpty();
+            testClass.LazyShorts.ShouldNotBeEmpty();
+            testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
 
             Should.Core.Assertions.Assert.True(
                 (int) testClass.REnum == (int) TestEnum.More
                 || (int) testClass.REnum == (int) TestEnum.Most
                 || (int) testClass.REnum == (int) TestEnum.Mostest
                 || (int) testClass.REnum == (int) TestEnum.Mostestest);
+        }
+
+        [TestMethod]
+        public void RandomObjectWillSupportACrazyCollectionOfCollections()
+        {
+            var testClass = RandomValue.Object<TestObject>();
+
+            var enumeration = testClass.CrazyBools.Take(3);
+
+            enumeration.Count().ShouldEqual(3);
+            enumeration.First().ShouldBeType<List<Collection<bool>>>();
         }
 
         [TestMethod]
@@ -467,6 +481,30 @@ namespace RandomTestValues.Tests
             var itemsInSecondRandomCollection = randomCollectionOfCollections.Last().Where(x => x < 3000 & x > 1000).Take(100);
 
             itemsInSecondRandomCollection.TakeWhile(x => x < 3000 & x > 1000).Count().ShouldEqual(100);
+        }
+
+        [TestMethod]
+        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfList()
+        {
+            var randomCollectionOfCollections = RandomValue.IEnumerable<List<uint>>().Take(9);
+
+            randomCollectionOfCollections.Count().ShouldEqual(9);
+            randomCollectionOfCollections.First().ShouldBeType<List<uint>>();
+
+            randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
+            randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
+        }
+
+        [TestMethod]
+        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfCollection()
+        {
+            var randomCollectionOfCollections = RandomValue.IEnumerable<ICollection<uint>>().Take(9);
+
+            randomCollectionOfCollections.Count().ShouldEqual(9);
+            randomCollectionOfCollections.First().ShouldBeType<Collection<uint>>();
+
+            randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
+            randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
         }
     }
 }
