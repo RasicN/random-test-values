@@ -254,14 +254,14 @@ namespace RandomTestValues.Tests
         {
             var randomBools = new List<bool>();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 randomBools.Add(RandomValue.Bool());
             }
 
             var listOfTrues = randomBools.Where(x => x == true);
 
-            listOfTrues.Count().ShouldBeInRange(15, 35);
+            listOfTrues.Count().ShouldBeInRange(400, 600);
         }
 
         [TestMethod]
@@ -347,6 +347,71 @@ namespace RandomTestValues.Tests
             var stringCollection = RandomValue.Collection<string>(25);
             
             stringCollection.Count.ShouldEqual(25);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentICollectionEachTime()
+        {
+            var stringCollection1 = RandomValue.ICollection<string>();
+            var stringCollection2 = RandomValue.ICollection<string>();
+
+            var intCollection1 = RandomValue.ICollection<int>();
+            var intCollection2 = RandomValue.ICollection<int>();
+
+            stringCollection1.ShouldNotEqual(stringCollection2);
+            intCollection1.ShouldNotEqual(intCollection2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomICollectionOfTheSpecifiedSize()
+        {
+            var stringCollection = RandomValue.ICollection<string>(25);
+
+            stringCollection.Count.ShouldEqual(25);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentIListEachTime()
+        {
+            var stringList1 = RandomValue.IList<string>();
+            var stringList2 = RandomValue.IList<string>();
+
+            var intList1 = RandomValue.IList<int>();
+            var intList2 = RandomValue.IList<int>();
+
+            stringList1.ShouldNotEqual(stringList2);
+            intList1.ShouldNotEqual(intList2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomIListOfTheSpecifiedSize()
+        {
+            var enumCollection = RandomValue.IList<TestEnum>(25);
+
+            enumCollection.Count.ShouldEqual(25);
+            enumCollection.First().ShouldBeType<TestEnum>();
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentListEachTime()
+        {
+            var stringList1 = RandomValue.List<string>();
+            var stringList2 = RandomValue.List<string>();
+
+            var intList1 = RandomValue.List<int>();
+            var intList2 = RandomValue.List<int>();
+
+            stringList1.ShouldNotEqual(stringList2);
+            intList1.ShouldNotEqual(intList2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomListOfTheSpecifiedSize()
+        {
+            var enumCollection = RandomValue.List<TestEnum>(25);
+
+            enumCollection.Count.ShouldEqual(25);
+            enumCollection.First().ShouldBeType<TestEnum>();
         }
     }
 }

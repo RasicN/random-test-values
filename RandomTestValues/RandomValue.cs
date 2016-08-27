@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Linq;
 
 namespace RandomTestValues
 {
@@ -273,65 +274,21 @@ namespace RandomTestValues
 
         public static List<T> List<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
-
-            var randomList = new List<T>();
-
-            var type = typeof(T);
-            
-            for (var i = 0; i < numberOfItems; i++)
-            {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T) SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
-            }
-
-            return randomList;
+            return ICollection<T>(optionalLength).ToList();
         }
 
         public static IList<T> IList<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
-
-            var randomList = new List<T>();
-
-            var type = typeof(T);
-
-            for (var i = 0; i < numberOfItems; i++)
-            {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
-            }
-
-            return randomList;
+            return ICollection<T>(optionalLength).ToList();
         }
 
         public static Collection<T> Collection<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
+            return (Collection<T>)ICollection<T>(optionalLength);
+        }
+
+        public static ICollection<T> ICollection<T>(int? optionalLength = null)
+        {
 
             var randomList = new Collection<T>();
 
@@ -339,52 +296,28 @@ namespace RandomTestValues
 
             for (var i = 0; i < numberOfItems; i++)
             {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T) EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
+                AddRandomValueToCollection(randomList, type);
             }
 
             return randomList;
         }
 
-        public static ICollection<T> ICollection<T>(int? optionalLength = null)
+        private static void AddRandomValueToCollection<T>(ICollection<T> randomList, Type type)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
-
-            var randomList = new Collection<T>();
-
-            var type = typeof(T);
-
-            for (var i = 0; i < numberOfItems; i++)
+            if (SupportedTypes.ContainsKey(type))
             {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
+                randomList.Add((T)SupportedTypes[type].Invoke(type));
             }
-
-            return randomList;
+            else if (type.IsEnum)
+            {
+                T enumMethod = (T)EnumMethodCall(type);
+                randomList.Add(enumMethod);
+            }
+            else if (type.IsClass)
+            {
+                T method = (T)ObjectMethodCall(type);
+                randomList.Add(method);
+            }
         }
 
         private static bool IsCollection(PropertyInfo prop)
