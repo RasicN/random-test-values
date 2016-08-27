@@ -289,6 +289,7 @@ namespace RandomTestValues
 
         public static ICollection<T> ICollection<T>(int? optionalLength = null)
         {
+            var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
 
             var randomList = new Collection<T>();
 
