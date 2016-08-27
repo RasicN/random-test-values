@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Linq;
+using System.Collections;
 
 namespace RandomTestValues
 {
@@ -291,29 +292,39 @@ namespace RandomTestValues
         {
             var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
 
-            var randomList = new Collection<T>();
+            var enumerable = IEnumerable<T>().Take(numberOfItems);
 
+            var randomList = new Collection<T>(enumerable.ToList());
+
+            return randomList;
+        }
+
+        public static IEnumerable<T> IEnumerable<T>()
+        {
             var type = typeof(T);
 
-            for (var i = 0; i < numberOfItems; i++)
+            var supportedType = SupportedTypes.ContainsKey(type) || type.IsEnum || type.IsClass || (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))); //prevent infinite loop
+            
+            while(supportedType)
             {
                 if (SupportedTypes.ContainsKey(type))
                 {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
+                    yield return (T)SupportedTypes[type].Invoke(type);
                 }
                 else if (type.IsEnum)
                 {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
+                    yield return (T)EnumMethodCall(type);
                 }
                 else if (type.IsClass)
                 {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
+                    yield return (T)ObjectMethodCall(type);
+                }
+                else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                {
+                    var underlyingType = type.GetGenericArguments()[0];
+                    yield return (T)EnumerableMethodCall(underlyingType);
                 }
             }
-
-            return randomList;
         }
 
         private static bool IsCollection(PropertyInfo prop)
@@ -331,6 +342,13 @@ namespace RandomTestValues
         private static object EnumMethodCall(Type type)
         {
             return typeof(RandomValue).GetMethod("Enum")
+                .MakeGenericMethod(type)
+                .Invoke(null, new object[] { });
+        }
+
+        private static object EnumerableMethodCall(Type type)
+        {
+            return typeof(RandomValue).GetMethod("IEnumerable")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
         }

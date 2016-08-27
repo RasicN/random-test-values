@@ -413,5 +413,60 @@ namespace RandomTestValues.Tests
             enumCollection.Count.ShouldEqual(25);
             enumCollection.First().ShouldBeType<TestEnum>();
         }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnALazyRandomCollection()
+        {
+            var randomCollectionOfBrendans = RandomValue.IEnumerable<long>();
+
+            var randomBrendans = randomCollectionOfBrendans.Take(10);
+
+            randomBrendans.Count().ShouldEqual(10);
+            randomBrendans.First().ShouldBeType<long>();
+            randomBrendans.First().ShouldNotEqual(randomBrendans.Last());
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnLazyEnum()
+        {
+            var randomCollectionOfTestEnums = RandomValue.IEnumerable<TestEnum>();
+
+            var randomEnums = randomCollectionOfTestEnums.Take(1000);
+
+            randomEnums.Count().ShouldEqual(1000);
+
+            randomEnums.Where(x => x == TestEnum.More).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Most).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Mostest).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Mostestest).ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnLazyObject()
+        {
+            var randomCollectionOfTestObjects = RandomValue.IEnumerable<TestObject>();
+
+            var randomObjects = randomCollectionOfTestObjects.Take(4);
+
+            randomObjects.Count().ShouldEqual(4);
+            randomObjects.First().RTestObject2List.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfEnumerables()
+        {
+            var randomCollectionOfCollections = RandomValue.IEnumerable<IEnumerable<short>>().Take(29);
+
+            randomCollectionOfCollections.Count().ShouldEqual(29);
+
+            var itemsInRandomCollection = randomCollectionOfCollections.First().Where(x => x < 3000).Take(10);
+
+            itemsInRandomCollection.Count().ShouldEqual(10);
+            itemsInRandomCollection.Where(x => x >= 3000).ShouldBeEmpty();
+
+            var itemsInSecondRandomCollection = randomCollectionOfCollections.Last().Where(x => x < 3000 & x > 1000).Take(100);
+
+            itemsInSecondRandomCollection.TakeWhile(x => x < 3000 & x > 1000).Count().ShouldEqual(100);
+        }
     }
 }
