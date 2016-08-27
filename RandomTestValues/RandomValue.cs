@@ -297,28 +297,23 @@ namespace RandomTestValues
 
             for (var i = 0; i < numberOfItems; i++)
             {
-                AddRandomValueToCollection(randomList, type);
+                if (SupportedTypes.ContainsKey(type))
+                {
+                    randomList.Add((T)SupportedTypes[type].Invoke(type));
+                }
+                else if (type.IsEnum)
+                {
+                    T enumMethod = (T)EnumMethodCall(type);
+                    randomList.Add(enumMethod);
+                }
+                else if (type.IsClass)
+                {
+                    T method = (T)ObjectMethodCall(type);
+                    randomList.Add(method);
+                }
             }
 
             return randomList;
-        }
-
-        private static void AddRandomValueToCollection<T>(ICollection<T> randomList, Type type)
-        {
-            if (SupportedTypes.ContainsKey(type))
-            {
-                randomList.Add((T)SupportedTypes[type].Invoke(type));
-            }
-            else if (type.IsEnum)
-            {
-                T enumMethod = (T)EnumMethodCall(type);
-                randomList.Add(enumMethod);
-            }
-            else if (type.IsClass)
-            {
-                T method = (T)ObjectMethodCall(type);
-                randomList.Add(method);
-            }
         }
 
         private static bool IsCollection(PropertyInfo prop)
