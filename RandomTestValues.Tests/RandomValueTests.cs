@@ -528,5 +528,14 @@ namespace RandomTestValues.Tests
             randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
             randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
         }
+
+        [TestMethod]
+        public void RandomDateTimeShouldGiveUniqueValuesForEachCall()
+        {
+            var blindDate1 = RandomValue.DateTime();
+            var blindDate2 = RandomValue.DateTime();
+
+            blindDate1.ShouldNotEqual(blindDate2);
+        }
     }
 }

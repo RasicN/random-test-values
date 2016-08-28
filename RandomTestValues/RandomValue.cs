@@ -26,7 +26,7 @@ namespace RandomTestValues
                 {typeof(ulong), type => ULong()},
                 {typeof(ushort), type => UShort()},
                 {typeof(Guid), type => Guid.NewGuid()},
-                {typeof(DateTime), type => DateTime.Now}
+                {typeof(DateTime), type => DateTime()}
             };
 
         private static readonly Random _Random = new Random();
@@ -185,6 +185,14 @@ namespace RandomTestValues
         public static decimal Decimal()
         {
             return (decimal)_Random.NextDouble();
+        }
+
+        public static DateTime DateTime()
+        {
+            var timeSinceStartOfDateTime = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons
+            var timeInHoursSinceStartOfDateTime = (int)timeSinceStartOfDateTime.TotalHours;
+            var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1; 
+            return System.DateTime.Now.AddHours(hoursToSubtract);
         }
 
         public static T Object<T>() where T : new()
