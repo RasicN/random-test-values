@@ -304,45 +304,30 @@ namespace RandomTestValues
             object listMethod = null;
 
             Type type = propertyType;
+
             if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
             {
-                listMethod =
-                typeof(RandomValue).GetMethod("List")
-                    .MakeGenericMethod(typeOfList)
-                    .Invoke(null, new object[] { null });
+                listMethod = ListMethodCall(typeOfList);
             }
             else if (type.GetGenericTypeDefinition() == typeof(IList<>))
             {
-                listMethod =
-                typeof(RandomValue).GetMethod("IList")
-                    .MakeGenericMethod(typeOfList)
-                    .Invoke(null, new object[] { null });
+                listMethod = IListMethodCall(typeOfList);
             }
             else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>)))
             {
-                listMethod =
-                typeof(RandomValue).GetMethod("Collection")
-                    .MakeGenericMethod(typeOfList)
-                    .Invoke(null, new object[] { null });
+                listMethod = CollectionMethodCall(typeOfList);
             }
             else if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
-                listMethod =
-                typeof(RandomValue).GetMethod("ICollection")
-                    .MakeGenericMethod(typeOfList)
-                    .Invoke(null, new object[] { null });
+                listMethod = ICollectionMethodCall(typeOfList);
             }
             else if (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
-                listMethod = 
-                typeof(RandomValue).GetMethod("IEnumerable")
-                    .MakeGenericMethod(typeOfList)
-                    .Invoke(null, new object[] {  }); ;
+                listMethod = IEnumerableMethodCall(typeOfList);
             }
 
             return listMethod;
         }
-
 
         private static bool IsSupportedCollection(Type propertyType)
         {
@@ -367,11 +352,39 @@ namespace RandomTestValues
                 .Invoke(null, new object[] { });
         }
 
-        private static object EnumerableMethodCall(Type type)
+        private static object IEnumerableMethodCall(Type type)
         {
             return typeof(RandomValue).GetMethod("IEnumerable")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
+        }
+
+        private static object ListMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("List")
+               .MakeGenericMethod(typeOfList)
+               .Invoke(null, new object[] { null });
+        }
+
+        private static object IListMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("IList")
+                .MakeGenericMethod(typeOfList)
+                .Invoke(null, new object[] { null });
+        }
+
+        private static object CollectionMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("Collection")
+                .MakeGenericMethod(typeOfList)
+                .Invoke(null, new object[] { null });
+        }
+
+        private static object ICollectionMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("ICollection")
+                .MakeGenericMethod(typeOfList)
+                .Invoke(null, new object[] { null });
         }
     }
 }
