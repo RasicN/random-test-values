@@ -201,38 +201,9 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
-                if (SupportedTypes.ContainsKey(prop.PropertyType))
-                {
-                    prop.SetValue(genericObject, Convert.ChangeType(SupportedTypes[prop.PropertyType].Invoke(prop.PropertyType), prop.PropertyType), null);
-                }
-                else if (prop.PropertyType.IsEnum)
-                {
-                    var enumMethod = EnumMethodCall(prop.PropertyType);
-                    prop.SetValue(genericObject, enumMethod, null);
-                }
-                else if (IsSupportedCollection(prop.PropertyType))
-                {
-                    // WARNING: UGLY CODE AHEAD
-                    object listMethod = GetListMethodOfCollections(prop.PropertyType, prop.PropertyType.GetGenericArguments()[0]);
+                var method = GetMethodCallAssociatedWithType(prop.PropertyType);
 
-                    if (listMethod != null)
-                    {
-                        if(prop.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                        {
-                            prop.SetValue(genericObject, listMethod, new object[] { });
-                        }
-                        else
-                        {
-                            prop.SetValue(genericObject, listMethod, null);
-                        }
-                    }
-                }
-                else
-                {
-                    var method = ObjectMethodCall(prop.PropertyType);
-
-                    prop.SetValue(genericObject, Convert.ChangeType(method, prop.PropertyType), null);
-                }
+                prop.SetValue(genericObject, method, null);
             }
 
             return genericObject;
@@ -285,25 +256,33 @@ namespace RandomTestValues
             
             while(supportedType)
             {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    yield return (T)SupportedTypes[type].Invoke(type);
-                }
-                else if (type.IsEnum)
-                {
-                    yield return (T)EnumMethodCall(type);
-                }
-                else if (IsSupportedCollection(type))
-                {
-                    var genericType = type.GetGenericArguments()[0];
-                    var method = GetListMethodOfCollections(type, genericType);
-                    yield return (T)method;
-                }
-                else if (type.IsClass)
-                {
-                    yield return (T)ObjectMethodCall(type);
-                }
+                var method = GetMethodCallAssociatedWithType(type);
+                
+                yield return (T)method;
             }
+        }
+
+        private static object GetMethodCallAssociatedWithType(Type propertyType)
+        {
+            object method;
+            if (SupportedTypes.ContainsKey(propertyType))
+            {
+                method = SupportedTypes[propertyType].Invoke(propertyType);
+            }
+            else if (propertyType.IsEnum)
+            {
+                method = EnumMethodCall(propertyType);
+            }
+            else if (IsSupportedCollection(propertyType))
+            {
+                method = GetListMethodOfCollections(propertyType, propertyType.GetGenericArguments()[0]);
+            }
+            else
+            {
+                method = ObjectMethodCall(propertyType);
+            }
+
+            return method;
         }
 
         private static object GetListMethodOfCollections(Type propertyType, Type genericType)
