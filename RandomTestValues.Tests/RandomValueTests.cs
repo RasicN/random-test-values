@@ -313,6 +313,16 @@ namespace RandomTestValues.Tests
             testClass.RList2.ShouldNotBeEmpty();
             testClass.TestObject2.ShouldNotBeDefault();
             testClass.RTestObject2List.ShouldNotBeEmpty();
+            testClass.RDateTime.ShouldNotBeDefault();
+            testClass.RTestObject2Collection.ShouldNotBeEmpty();
+            testClass.RGuid.ShouldNotBeDefault();
+            testClass.REnumList.ShouldNotBeEmpty();
+            testClass.TestObject3.ShouldNotBeDefault();
+            testClass.RInt2.ShouldNotBeDefault();
+            testClass.RString2.ShouldNotBeDefault();
+            testClass.RDecimal2.ShouldNotBeDefault();
+            testClass.RDouble2.ShouldNotBeDefault();
+            testClass.REnumCollection.ShouldNotBeEmpty();
             testClass.LazyShorts.ShouldNotBeEmpty();
             testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
 
@@ -340,6 +350,18 @@ namespace RandomTestValues.Tests
             var testClass = RandomValue.Object<TestObject>();
 
             testClass.TestObject2.RObject.ShouldBeType<object>();
+        }
+
+        [TestMethod]
+        public void RandomObjectOfSupportedValuesWillReturnGoodValuesInObjectsThatAreRecursivelyFound()
+        {
+            var testClass = RandomValue.Object<TestObject>();
+
+            testClass.TestObject2.RObject.ShouldBeType<object>();
+            testClass.TestObject2.RInt2.ShouldNotBeDefault();
+            testClass.TestObject2.RString2.ShouldNotBeDefault();
+            testClass.TestObject2.RDouble2.ShouldNotBeDefault();
+            testClass.TestObject2.RDecimal2.ShouldNotBeDefault();
         }
 
         [TestMethod]

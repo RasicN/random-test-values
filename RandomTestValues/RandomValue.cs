@@ -281,7 +281,7 @@ namespace RandomTestValues
                 SupportedTypes.ContainsKey(type) 
                 || type.IsEnum 
                 || type.IsClass 
-                || (IsSupportedCollection(type)); //prevent infinite loop
+                || (IsSupportedCollection(type)); 
             
             while(supportedType)
             {
