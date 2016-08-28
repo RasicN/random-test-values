@@ -46,7 +46,7 @@ namespace RandomTestValues
         /// </summary>
         /// <param name="stringLength">Length of desired random string</param>
         /// <returns>A random string the length of a stringLength parameter</returns>
-        public static string String(int stringLength)
+        public static string String(int stringLength) //Where did the tests go for this method? 
         {
             var randomString = String();
 
@@ -187,9 +187,13 @@ namespace RandomTestValues
             return (decimal)_Random.NextDouble();
         }
 
+        /// <summary>
+        /// Use for getting a random DateTimes for your unit tests. Always returns a date in the past. 
+        /// </summary>
+        /// <returns>A random DateTime</returns>
         public static DateTime DateTime()
         {
-            var timeSinceStartOfDateTime = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons
+            var timeSinceStartOfDateTime = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons. Using system.DateTime.Min just made weird looking dates.
             var timeInHoursSinceStartOfDateTime = (int)timeSinceStartOfDateTime.TotalHours;
             var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1; 
             return System.DateTime.Now.AddHours(hoursToSubtract);
