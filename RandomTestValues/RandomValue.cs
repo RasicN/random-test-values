@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Linq;
 
 namespace RandomTestValues
 {
@@ -25,7 +26,7 @@ namespace RandomTestValues
                 {typeof(ulong), type => ULong()},
                 {typeof(ushort), type => UShort()},
                 {typeof(Guid), type => Guid.NewGuid()},
-                {typeof(DateTime), type => DateTime.Now}
+                {typeof(DateTime), type => DateTime()}
             };
 
         private static readonly Random _Random = new Random();
@@ -45,7 +46,7 @@ namespace RandomTestValues
         /// </summary>
         /// <param name="stringLength">Length of desired random string</param>
         /// <returns>A random string the length of a stringLength parameter</returns>
-        public static string String(int stringLength)
+        public static string String(int stringLength) //Where did the tests go for this method? 
         {
             var randomString = String();
 
@@ -186,6 +187,18 @@ namespace RandomTestValues
             return (decimal)_Random.NextDouble();
         }
 
+        /// <summary>
+        /// Use for getting a random DateTimes for your unit tests. Always returns a date in the past. 
+        /// </summary>
+        /// <returns>A random DateTime</returns>
+        public static DateTime DateTime()
+        {
+            var timeSinceStartOfDateTime = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons. Using system.DateTime.Min just made weird looking dates.
+            var timeInHoursSinceStartOfDateTime = (int)timeSinceStartOfDateTime.TotalHours;
+            var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1; 
+            return System.DateTime.Now.AddHours(hoursToSubtract);
+        }
+
         public static T Object<T>() where T : new()
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
@@ -200,63 +213,9 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
-                if (SupportedTypes.ContainsKey(prop.PropertyType))
-                {
-                    prop.SetValue(genericObject, Convert.ChangeType(SupportedTypes[prop.PropertyType].Invoke(prop.PropertyType), prop.PropertyType), null);
-                }
-                else if (prop.PropertyType.IsEnum)
-                {
-                    var enumMethod = EnumMethodCall(prop.PropertyType);
-                    prop.SetValue(genericObject, enumMethod, null);
-                }
-                else if (IsCollection(prop))
-                {
-                    // WARNING: UGLY CODE AHEAD
-                    var typeOfList = prop.PropertyType.GetGenericArguments();
+                var method = GetMethodCallAssociatedWithType(prop.PropertyType);
 
-                    object listMethod = null;
-
-                    Type type = prop.PropertyType;
-                    if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
-                    {
-                        listMethod =
-                        typeof(RandomValue).GetMethod("List")
-                            .MakeGenericMethod(typeOfList)
-                            .Invoke(null, new object[] { null });
-                    }
-                    else if (type.GetGenericTypeDefinition() == typeof(IList<>))
-                    {
-                        listMethod =
-                        typeof(RandomValue).GetMethod("IList")
-                            .MakeGenericMethod(typeOfList)
-                            .Invoke(null, new object[] { null });
-                    }
-                    else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>)))
-                    {
-                        listMethod =
-                        typeof(RandomValue).GetMethod("Collection")
-                            .MakeGenericMethod(typeOfList)
-                            .Invoke(null, new object[] { null });
-                    }
-                    else if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
-                    {
-                        listMethod =
-                        typeof(RandomValue).GetMethod("ICollection")
-                            .MakeGenericMethod(typeOfList)
-                            .Invoke(null, new object[] { null });
-                    }
-
-                    if (listMethod != null)
-                    {
-                        prop.SetValue(genericObject, listMethod, null);
-                    }
-                }
-                else
-                {
-                    var method = ObjectMethodCall(prop.PropertyType);
-
-                    prop.SetValue(genericObject, Convert.ChangeType(method, prop.PropertyType), null);
-                }
+                prop.SetValue(genericObject, method, null);
             }
 
             return genericObject;
@@ -273,123 +232,110 @@ namespace RandomTestValues
 
         public static List<T> List<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
-
-            var randomList = new List<T>();
-
-            var type = typeof(T);
-            
-            for (var i = 0; i < numberOfItems; i++)
-            {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T) SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
-            }
-
-            return randomList;
+            return ICollection<T>(optionalLength).ToList();
         }
 
         public static IList<T> IList<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
-
-            var randomList = new List<T>();
-
-            var type = typeof(T);
-
-            for (var i = 0; i < numberOfItems; i++)
-            {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
-            }
-
-            return randomList;
+            return ICollection<T>(optionalLength).ToList();
         }
 
         public static Collection<T> Collection<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
-
-            var randomList = new Collection<T>();
-
-            var type = typeof(T);
-
-            for (var i = 0; i < numberOfItems; i++)
-            {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T) EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
-            }
-
-            return randomList;
+            return (Collection<T>)ICollection<T>(optionalLength);
         }
 
         public static ICollection<T> ICollection<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? new Random().Next(1, 10);
+            var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
 
-            var randomList = new Collection<T>();
+            var enumerable = IEnumerable<T>().Take(numberOfItems);
 
-            var type = typeof(T);
-
-            for (var i = 0; i < numberOfItems; i++)
-            {
-                if (SupportedTypes.ContainsKey(type))
-                {
-                    randomList.Add((T)SupportedTypes[type].Invoke(type));
-                }
-                else if (type.IsEnum)
-                {
-                    T enumMethod = (T)EnumMethodCall(type);
-                    randomList.Add(enumMethod);
-                }
-                else if (type.IsClass)
-                {
-                    T method = (T)ObjectMethodCall(type);
-                    randomList.Add(method);
-                }
-            }
+            var randomList = new Collection<T>(enumerable.ToList());
 
             return randomList;
         }
 
-        private static bool IsCollection(PropertyInfo prop)
+        public static IEnumerable<T> IEnumerable<T>()
         {
-            return prop.PropertyType.GetInterface("ICollection") != null || (prop.PropertyType.IsGenericType && (prop.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>) || prop.PropertyType.GetGenericTypeDefinition() == typeof(IList<>)));
+            var type = typeof(T);
+
+            var supportedType = 
+                SupportedTypes.ContainsKey(type) 
+                || type.IsEnum 
+                || type.IsClass 
+                || (IsSupportedCollection(type)); 
+            
+            while(supportedType)
+            {
+                var method = GetMethodCallAssociatedWithType(type);
+                
+                yield return (T)method;
+            }
+        }
+
+        private static object GetMethodCallAssociatedWithType(Type propertyType)
+        {
+            object method;
+            if (SupportedTypes.ContainsKey(propertyType))
+            {
+                method = SupportedTypes[propertyType].Invoke(propertyType);
+            }
+            else if (propertyType.IsEnum)
+            {
+                method = EnumMethodCall(propertyType);
+            }
+            else if (IsSupportedCollection(propertyType))
+            {
+                method = GetListMethodOfCollections(propertyType, propertyType.GetGenericArguments()[0]);
+            }
+            else
+            {
+                method = ObjectMethodCall(propertyType);
+            }
+
+            return method;
+        }
+
+        private static object GetListMethodOfCollections(Type propertyType, Type genericType)
+        {
+            var typeOfList = genericType;
+
+            object listMethod = null;
+
+            Type type = propertyType;
+
+            if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
+            {
+                listMethod = ListMethodCall(typeOfList);
+            }
+            else if (type.GetGenericTypeDefinition() == typeof(IList<>))
+            {
+                listMethod = IListMethodCall(typeOfList);
+            }
+            else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>)))
+            {
+                listMethod = CollectionMethodCall(typeOfList);
+            }
+            else if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
+            {
+                listMethod = ICollectionMethodCall(typeOfList);
+            }
+            else if (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                listMethod = IEnumerableMethodCall(typeOfList);
+            }
+
+            return listMethod;
+        }
+
+        private static bool IsSupportedCollection(Type propertyType)
+        {
+            return propertyType.GetInterface("ICollection") != null 
+                || (propertyType.IsGenericType 
+                && (propertyType.GetGenericTypeDefinition() == typeof(ICollection<>) 
+                || propertyType.GetGenericTypeDefinition() == typeof(IList<>)
+                || propertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
         }
 
         private static object ObjectMethodCall(Type type)
@@ -404,6 +350,41 @@ namespace RandomTestValues
             return typeof(RandomValue).GetMethod("Enum")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
+        }
+
+        private static object IEnumerableMethodCall(Type type)
+        {
+            return typeof(RandomValue).GetMethod("IEnumerable")
+                .MakeGenericMethod(type)
+                .Invoke(null, new object[] { });
+        }
+
+        private static object ListMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("List")
+               .MakeGenericMethod(typeOfList)
+               .Invoke(null, new object[] { null });
+        }
+
+        private static object IListMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("IList")
+                .MakeGenericMethod(typeOfList)
+                .Invoke(null, new object[] { null });
+        }
+
+        private static object CollectionMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("Collection")
+                .MakeGenericMethod(typeOfList)
+                .Invoke(null, new object[] { null });
+        }
+
+        private static object ICollectionMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("ICollection")
+                .MakeGenericMethod(typeOfList)
+                .Invoke(null, new object[] { null });
         }
     }
 }

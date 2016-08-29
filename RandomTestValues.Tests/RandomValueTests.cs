@@ -2,6 +2,7 @@
 using RandomTestValues.Tests.ShouldExtensions;
 using Should;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace RandomTestValues.Tests
@@ -254,14 +255,14 @@ namespace RandomTestValues.Tests
         {
             var randomBools = new List<bool>();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 randomBools.Add(RandomValue.Bool());
             }
 
             var listOfTrues = randomBools.Where(x => x == true);
 
-            listOfTrues.Count().ShouldBeInRange(15, 35);
+            listOfTrues.Count().ShouldBeInRange(400, 600);
         }
 
         [TestMethod]
@@ -312,6 +313,18 @@ namespace RandomTestValues.Tests
             testClass.RList2.ShouldNotBeEmpty();
             testClass.TestObject2.ShouldNotBeDefault();
             testClass.RTestObject2List.ShouldNotBeEmpty();
+            testClass.RDateTime.ShouldNotBeDefault();
+            testClass.RTestObject2Collection.ShouldNotBeEmpty();
+            testClass.RGuid.ShouldNotBeDefault();
+            testClass.REnumList.ShouldNotBeEmpty();
+            testClass.TestObject3.ShouldNotBeDefault();
+            testClass.RInt2.ShouldNotBeDefault();
+            testClass.RString2.ShouldNotBeDefault();
+            testClass.RDecimal2.ShouldNotBeDefault();
+            testClass.RDouble2.ShouldNotBeDefault();
+            testClass.REnumCollection.ShouldNotBeEmpty();
+            testClass.LazyShorts.ShouldNotBeEmpty();
+            testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
 
             Should.Core.Assertions.Assert.True(
                 (int) testClass.REnum == (int) TestEnum.More
@@ -321,11 +334,34 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
+        public void RandomObjectWillSupportACrazyCollectionOfCollections()
+        {
+            var testClass = RandomValue.Object<TestObject>();
+
+            var enumeration = testClass.CrazyBools.Take(3);
+
+            enumeration.Count().ShouldEqual(3);
+            enumeration.First().ShouldBeType<List<Collection<bool>>>();
+        }
+
+        [TestMethod]
         public void RandomObjectOfSupportedValuesWillReturnNullForUnDeterminable()
         {
             var testClass = RandomValue.Object<TestObject>();
 
             testClass.TestObject2.RObject.ShouldBeType<object>();
+        }
+
+        [TestMethod]
+        public void RandomObjectOfSupportedValuesWillReturnGoodValuesInObjectsThatAreRecursivelyFound()
+        {
+            var testClass = RandomValue.Object<TestObject>();
+
+            testClass.TestObject2.RObject.ShouldBeType<object>();
+            testClass.TestObject2.RInt2.ShouldNotBeDefault();
+            testClass.TestObject2.RString2.ShouldNotBeDefault();
+            testClass.TestObject2.RDouble2.ShouldNotBeDefault();
+            testClass.TestObject2.RDecimal2.ShouldNotBeDefault();
         }
 
         [TestMethod]
@@ -347,6 +383,159 @@ namespace RandomTestValues.Tests
             var stringCollection = RandomValue.Collection<string>(25);
             
             stringCollection.Count.ShouldEqual(25);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentICollectionEachTime()
+        {
+            var stringCollection1 = RandomValue.ICollection<string>();
+            var stringCollection2 = RandomValue.ICollection<string>();
+
+            var intCollection1 = RandomValue.ICollection<int>();
+            var intCollection2 = RandomValue.ICollection<int>();
+
+            stringCollection1.ShouldNotEqual(stringCollection2);
+            intCollection1.ShouldNotEqual(intCollection2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomICollectionOfTheSpecifiedSize()
+        {
+            var stringCollection = RandomValue.ICollection<string>(25);
+
+            stringCollection.Count.ShouldEqual(25);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentIListEachTime()
+        {
+            var stringList1 = RandomValue.IList<string>();
+            var stringList2 = RandomValue.IList<string>();
+
+            var intList1 = RandomValue.IList<int>();
+            var intList2 = RandomValue.IList<int>();
+
+            stringList1.ShouldNotEqual(stringList2);
+            intList1.ShouldNotEqual(intList2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomIListOfTheSpecifiedSize()
+        {
+            var enumCollection = RandomValue.IList<TestEnum>(25);
+
+            enumCollection.Count.ShouldEqual(25);
+            enumCollection.First().ShouldBeType<TestEnum>();
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnADifferentListEachTime()
+        {
+            var stringList1 = RandomValue.List<string>();
+            var stringList2 = RandomValue.List<string>();
+
+            var intList1 = RandomValue.List<int>();
+            var intList2 = RandomValue.List<int>();
+
+            stringList1.ShouldNotEqual(stringList2);
+            intList1.ShouldNotEqual(intList2);
+        }
+
+        [TestMethod]
+        public void RandomCollectionOfTypeShouldReturnARandomListOfTheSpecifiedSize()
+        {
+            var enumCollection = RandomValue.List<TestEnum>(25);
+
+            enumCollection.Count.ShouldEqual(25);
+            enumCollection.First().ShouldBeType<TestEnum>();
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnALazyRandomCollection()
+        {
+            var randomCollectionOfBrendans = RandomValue.IEnumerable<long>();
+
+            var randomBrendans = randomCollectionOfBrendans.Take(10);
+
+            randomBrendans.Count().ShouldEqual(10);
+            randomBrendans.First().ShouldBeType<long>();
+            randomBrendans.First().ShouldNotEqual(randomBrendans.Last());
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnLazyEnum()
+        {
+            var randomCollectionOfTestEnums = RandomValue.IEnumerable<TestEnum>();
+
+            var randomEnums = randomCollectionOfTestEnums.Take(1000);
+
+            randomEnums.Count().ShouldEqual(1000);
+
+            randomEnums.Where(x => x == TestEnum.More).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Most).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Mostest).ShouldNotBeEmpty();
+            randomEnums.Where(x => x == TestEnum.Mostestest).ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnLazyObject()
+        {
+            var randomCollectionOfTestObjects = RandomValue.IEnumerable<TestObject>();
+
+            var randomObjects = randomCollectionOfTestObjects.Take(4);
+
+            randomObjects.Count().ShouldEqual(4);
+            randomObjects.First().RTestObject2List.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfEnumerables()
+        {
+            var randomCollectionOfCollections = RandomValue.IEnumerable<IEnumerable<short>>().Take(29);
+
+            randomCollectionOfCollections.Count().ShouldEqual(29);
+
+            var itemsInRandomCollection = randomCollectionOfCollections.First().Where(x => x < 3000).Take(10);
+
+            itemsInRandomCollection.Count().ShouldEqual(10);
+            itemsInRandomCollection.Where(x => x >= 3000).ShouldBeEmpty();
+
+            var itemsInSecondRandomCollection = randomCollectionOfCollections.Last().Where(x => x < 3000 & x > 1000).Take(100);
+
+            itemsInSecondRandomCollection.TakeWhile(x => x < 3000 & x > 1000).Count().ShouldEqual(100);
+        }
+
+        [TestMethod]
+        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfList()
+        {
+            var randomCollectionOfCollections = RandomValue.IEnumerable<List<uint>>().Take(9);
+
+            randomCollectionOfCollections.Count().ShouldEqual(9);
+            randomCollectionOfCollections.First().ShouldBeType<List<uint>>();
+
+            randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
+            randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
+        }
+
+        [TestMethod]
+        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfCollection()
+        {
+            var randomCollectionOfCollections = RandomValue.IEnumerable<ICollection<uint>>().Take(9);
+
+            randomCollectionOfCollections.Count().ShouldEqual(9);
+            randomCollectionOfCollections.First().ShouldBeType<Collection<uint>>();
+
+            randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
+            randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
+        }
+
+        [TestMethod]
+        public void RandomDateTimeShouldGiveUniqueValuesForEachCall()
+        {
+            var blindDate1 = RandomValue.DateTime();
+            var blindDate2 = RandomValue.DateTime();
+
+            blindDate1.ShouldNotEqual(blindDate2);
         }
     }
 }

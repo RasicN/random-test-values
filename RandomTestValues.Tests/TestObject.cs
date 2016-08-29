@@ -7,12 +7,12 @@ namespace RandomTestValues.Tests
     public class TestObject
     {
         public int RInt { get; set; }
-        public string RString { get; set; } 
+        public string RString { get; set; }
         public decimal RDecimal { get; set; }
         public double RDouble { get; set; }
         public int RInt2 { get; set; }
         public string RString2 { get; set; }
-        public decimal RDecimal2{ get; set; }
+        public decimal RDecimal2 { get; set; }
         public double RDouble2 { get; set; }
         public TestEnum REnum { get; set; }
         public ICollection<TestEnum> REnumCollection { get; set; }
@@ -27,5 +27,7 @@ namespace RandomTestValues.Tests
         public List<TestObject2> RTestObject2List { get; set; }
         public ICollection<TestObject2> RTestObject2Collection { get; set; }
         public DateTime RDateTime { get; set; }
+        public IEnumerable<short> LazyShorts { get; set; }
+        public IEnumerable<List<Collection<bool>>> CrazyBools { get; set; }
     }
 }
