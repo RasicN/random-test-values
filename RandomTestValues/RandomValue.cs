@@ -213,6 +213,12 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
+                if (prop.SetMethod == null)
+                {
+                    // Property doesn't have a public setter so let's ignore it
+                    continue;
+                }
+
                 var method = GetMethodCallAssociatedWithType(prop.PropertyType);
 
                 prop.SetValue(genericObject, method, null);
