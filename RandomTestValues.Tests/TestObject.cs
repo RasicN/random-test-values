@@ -30,5 +30,7 @@ namespace RandomTestValues.Tests
         public IEnumerable<short> LazyShorts { get; set; }
         public IEnumerable<List<Collection<bool>>> CrazyBools { get; set; }
         public string GetOnly => "Test";
+        public string[] Strings { get; set; }
+        public TestObject2[] RTestObject2Array { get; set; }
     }
 }

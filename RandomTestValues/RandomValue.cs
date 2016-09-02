@@ -25,7 +25,7 @@ namespace RandomTestValues
                 {typeof(uint), type => UInt()},
                 {typeof(ulong), type => ULong()},
                 {typeof(ushort), type => UShort()},
-                {typeof(Guid), type => Guid.NewGuid()},
+                {typeof(Guid), type => Guid()},
                 {typeof(DateTime), type => DateTime()}
             };
 
@@ -38,7 +38,7 @@ namespace RandomTestValues
         /// <returns>A random string the length of a Guid</returns>
         public static string String()
         {
-            return Guid.NewGuid().ToString();
+            return Guid().ToString();
         }
 
         /// <summary>
@@ -198,6 +198,10 @@ namespace RandomTestValues
             var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1; 
             return System.DateTime.Now.AddHours(hoursToSubtract);
         }
+        public static Guid Guid()
+        {
+            return System.Guid.NewGuid();
+        }
 
         public static T Object<T>() where T : new()
         {
@@ -234,6 +238,21 @@ namespace RandomTestValues
             var index = _Random.Next(fields.Length);
 
             return (T)System.Enum.Parse(typeof(T), fields[index].Name, false);
+        }
+
+        public static T[] Array<T>(int? optionalLength = null)
+        {
+            var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
+
+            var enumerable = IEnumerable<T>().Take(numberOfItems);
+
+            var randomArray = new T[numberOfItems];
+            for (int i = 0; i < numberOfItems; i++)
+            {
+                randomArray[i] = enumerable.ElementAt(i);
+            }
+
+            return randomArray;
         }
 
         public static List<T> List<T>(int? optionalLength = null)
@@ -293,7 +312,8 @@ namespace RandomTestValues
             }
             else if (IsSupportedCollection(propertyType))
             {
-                method = GetListMethodOfCollections(propertyType, propertyType.GetGenericArguments()[0]);
+                var collectionType = propertyType.IsArray ? propertyType.GetElementType() : propertyType.GetGenericArguments()[0];
+                method = GetListMethodOfCollections(propertyType, collectionType);
             }
             else
             {
@@ -311,7 +331,11 @@ namespace RandomTestValues
 
             Type type = propertyType;
 
-            if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
+            if(propertyType.IsArray)
+            {
+                listMethod = ArrayMethodCall(propertyType.GetElementType());
+            }
+            else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
             {
                 listMethod = ListMethodCall(typeOfList);
             }
@@ -337,11 +361,13 @@ namespace RandomTestValues
 
         private static bool IsSupportedCollection(Type propertyType)
         {
-            return propertyType.GetInterface("ICollection") != null 
-                || (propertyType.IsGenericType 
-                && (propertyType.GetGenericTypeDefinition() == typeof(ICollection<>) 
-                || propertyType.GetGenericTypeDefinition() == typeof(IList<>)
-                || propertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
+            return propertyType.GetInterface("ICollection") != null
+                   || (propertyType.IsGenericType &&
+                       (propertyType.IsArray
+                       || propertyType.GetGenericTypeDefinition() == typeof(ICollection<>)
+                       || propertyType.GetGenericTypeDefinition() == typeof(IList<>)
+                       || propertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                       ));
         }
 
         private static object ObjectMethodCall(Type type)
@@ -363,6 +389,13 @@ namespace RandomTestValues
             return typeof(RandomValue).GetMethod("IEnumerable")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
+        }
+
+        private static object ArrayMethodCall(Type typeOfList)
+        {
+            return typeof(RandomValue).GetMethod("Array")
+               .MakeGenericMethod(typeOfList)
+               .Invoke(null, new object[] { null });
         }
 
         private static object ListMethodCall(Type typeOfList)

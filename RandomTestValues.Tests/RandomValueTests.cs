@@ -325,6 +325,8 @@ namespace RandomTestValues.Tests
             testClass.REnumCollection.ShouldNotBeEmpty();
             testClass.LazyShorts.ShouldNotBeEmpty();
             testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
+            testClass.Strings.ShouldNotBeEmpty();
+            testClass.RTestObject2Array.ShouldNotBeEmpty();
 
             Should.Core.Assertions.Assert.True(
                 (int) testClass.REnum == (int) TestEnum.More
@@ -536,6 +538,15 @@ namespace RandomTestValues.Tests
             var blindDate2 = RandomValue.DateTime();
 
             blindDate1.ShouldNotEqual(blindDate2);
+        }
+
+        [TestMethod]
+        public void RandomGuidShouldGiveUniqueValuesForEachCall()
+        {
+            var guid1 = RandomValue.Guid();
+            var guid2 = RandomValue.Guid();
+
+            guid1.ShouldNotEqual(guid2);
         }
     }
 }
