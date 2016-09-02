@@ -336,6 +336,46 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
+        public void NullableValuesWillBePopulatedWithCollections()
+        {
+            var listOfNullableInt = RandomValue.List<int?>(25);
+            var int1 = listOfNullableInt.ElementAt(0);
+            var int2 = listOfNullableInt.ElementAt(1);
+            
+            Should.Core.Assertions.Assert.True(listOfNullableInt.All(x => x.HasValue));
+            
+            int1.ShouldNotEqual(int2);
+        }
+
+        [TestMethod]
+        public void NullableValuesWillBePopulatedWithObject()
+        {
+            var testClass = RandomValue.Object<NullableTestObject>();
+
+            testClass.RDecimal.ShouldNotBeDefault();
+            testClass.RDouble.ShouldNotBeDefault();
+            testClass.RInt.ShouldNotBeDefault();
+            testClass.RCollection.ShouldNotBeEmpty();
+            testClass.RCollection2.ShouldNotBeEmpty();
+            testClass.RList.ShouldNotBeEmpty();
+            testClass.RDateTime.ShouldNotBeDefault();
+            testClass.RGuid.ShouldNotBeDefault();
+            testClass.REnumList.ShouldNotBeEmpty();
+            testClass.RInt2.ShouldNotBeDefault();
+            testClass.RDecimal2.ShouldNotBeDefault();
+            testClass.RDouble2.ShouldNotBeDefault();
+            testClass.REnumCollection.ShouldNotBeEmpty();
+            testClass.LazyShorts.ShouldNotBeEmpty();
+            testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
+
+            Should.Core.Assertions.Assert.True(
+                (int)testClass.REnum == (int)TestEnum.More
+                || (int)testClass.REnum == (int)TestEnum.Most
+                || (int)testClass.REnum == (int)TestEnum.Mostest
+                || (int)testClass.REnum == (int)TestEnum.Mostestest);
+        }
+
+        [TestMethod]
         public void RandomObjectWillSupportACrazyCollectionOfCollections()
         {
             var testClass = RandomValue.Object<TestObject>();

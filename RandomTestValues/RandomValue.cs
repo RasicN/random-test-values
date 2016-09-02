@@ -195,7 +195,7 @@ namespace RandomTestValues
         {
             var timeSinceStartOfDateTime = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons. Using system.DateTime.Min just made weird looking dates.
             var timeInHoursSinceStartOfDateTime = (int)timeSinceStartOfDateTime.TotalHours;
-            var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1; 
+            var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1;
             return System.DateTime.Now.AddHours(hoursToSubtract);
         }
         public static Guid Guid()
@@ -285,42 +285,58 @@ namespace RandomTestValues
         {
             var type = typeof(T);
 
-            var supportedType = 
-                SupportedTypes.ContainsKey(type) 
-                || type.IsEnum 
-                || type.IsClass 
-                || (IsSupportedCollection(type)); 
-            
-            while(supportedType)
+            var supportType = GetSupportType(type);
+
+            while (supportType != SupportType.NotSupported)
             {
                 var method = GetMethodCallAssociatedWithType(type);
-                
+
                 yield return (T)method;
             }
         }
 
         private static object GetMethodCallAssociatedWithType(Type propertyType)
         {
-            object method;
-            if (SupportedTypes.ContainsKey(propertyType))
-            {
-                method = SupportedTypes[propertyType].Invoke(propertyType);
-            }
-            else if (propertyType.IsEnum)
-            {
-                method = EnumMethodCall(propertyType);
-            }
-            else if (IsSupportedCollection(propertyType))
-            {
-                var collectionType = propertyType.IsArray ? propertyType.GetElementType() : propertyType.GetGenericArguments()[0];
-                method = GetListMethodOfCollections(propertyType, collectionType);
-            }
-            else
-            {
-                method = ObjectMethodCall(propertyType);
-            }
+            var supportType = GetSupportType(propertyType);
 
-            return method;
+            switch (supportType)
+            {
+                case SupportType.Basic:
+                    return SupportedTypes[propertyType].Invoke(propertyType);
+                case SupportType.Enum:
+                    return EnumMethodCall(propertyType);
+                case SupportType.Collection:
+                {
+                    var collectionType = propertyType.IsArray
+                        ? propertyType.GetElementType()
+                        : propertyType.GetGenericArguments()[0];
+                    return GetListMethodOfCollections(propertyType, collectionType);
+                }
+                case SupportType.Nullable:
+                    return NullableMethodCall(propertyType, Bool());
+                case SupportType.UserDefined:
+                    return ObjectMethodCall(propertyType);
+                default:
+                    return null;
+            }
+        }
+
+        private static object NullableMethodCall(Type propertyType, bool makeNull)
+        {
+            // We can enable this if we want but the more I thought about it the more I disliked it.  If somone wants thier
+            // nullable field to be null then they can set it equal to null after the fact.  
+            // I want consistency in behavior especially when dealing with unit tests.
+            // if (makeNull)
+            // {
+            //     return null;
+            // }
+            var baseType = propertyType.GetGenericArguments()[0];
+            return GetMethodCallAssociatedWithType(baseType);
+        }
+
+        private static bool IsNullableType(Type propertyType)
+        {
+            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         private static object GetListMethodOfCollections(Type propertyType, Type genericType)
@@ -331,7 +347,7 @@ namespace RandomTestValues
 
             Type type = propertyType;
 
-            if(propertyType.IsArray)
+            if (propertyType.IsArray)
             {
                 listMethod = ArrayMethodCall(propertyType.GetElementType());
             }
@@ -374,7 +390,7 @@ namespace RandomTestValues
         {
             return typeof(RandomValue).GetMethod("Object")
                 .MakeGenericMethod(type)
-                .Invoke(null, new object[] {});
+                .Invoke(null, new object[] { });
         }
 
         private static object EnumMethodCall(Type type)
@@ -425,5 +441,41 @@ namespace RandomTestValues
                 .MakeGenericMethod(typeOfList)
                 .Invoke(null, new object[] { null });
         }
+
+        private static SupportType GetSupportType(Type type)
+        {
+            if (SupportedTypes.ContainsKey(type))
+            {
+                return SupportType.Basic;
+            }
+            if (type.IsEnum)
+            {
+                return SupportType.Enum;
+            }
+            if (IsSupportedCollection(type))
+            {
+                return SupportType.Collection;
+            }
+            if (IsNullableType(type))
+            {
+                return SupportType.Nullable;
+            }
+            if (type.IsClass)
+            {
+                return SupportType.UserDefined;
+            }
+
+            return SupportType.NotSupported;
+        }
+    }
+
+    internal enum SupportType
+    {
+        NotSupported,
+        UserDefined,
+        Basic,
+        Enum,
+        Collection,
+        Nullable
     }
 }
