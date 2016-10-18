@@ -183,9 +183,14 @@ namespace RandomTestValues
             return true;
         }
 
-        public static decimal Decimal()
+        /// <summary>
+        /// Use for getting a random Decimal for your unit test
+        /// </summary>
+        /// <param name="maxPossibleValue">Maximum decimal value, defaults to 1</param>
+        /// <returns></returns>
+        public static decimal Decimal(decimal maxPossibleValue = 1m)
         {
-            return (decimal)_Random.NextDouble();
+            return (decimal)_Random.NextDouble() * maxPossibleValue;
         }
 
         /// <summary>

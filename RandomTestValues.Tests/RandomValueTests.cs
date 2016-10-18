@@ -276,6 +276,35 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
+        public void RandomDecimalShouldReturnValuesSmallerThanMaximumEveryTimeIsCalled()
+        {
+            var maxDecimal1 = .3m;
+            var maxDecimal2 = .5m;
+            var maxDecimal3 = .8m;
+
+            var randomDecimal1 = RandomValue.Decimal(maxDecimal1);
+            var randomDecimal2 = RandomValue.Decimal(maxDecimal2);
+            var randomDecimal3 = RandomValue.Decimal(maxDecimal3);
+
+            randomDecimal1.ShouldBeLessThan(maxDecimal1 + .01m);
+            randomDecimal2.ShouldBeLessThan(maxDecimal2 + .01m);
+            randomDecimal3.ShouldBeLessThan(maxDecimal3 + .01m);
+        }
+
+        [TestMethod]
+        public void RandomDecimalShouldReturnARelevantValueWhenCalledWithAMaximumDecimal()
+        {
+            var maxDecimal1 = 520.3m;
+            var maxDecimal2 = 356.5m;
+
+            var randomDecimal1 = RandomValue.Decimal(maxDecimal1);
+            var randomDecimal2 = RandomValue.Decimal(maxDecimal2);
+
+            randomDecimal1.ShouldBeGreaterThan(1);
+            randomDecimal2.ShouldBeGreaterThan(1);
+        }
+
+        [TestMethod]
         public void RandomEnumShouldReturnAnEmumOfTheCorrectType()
         {
             var randomEnum = RandomValue.Enum<TestEnum>();
