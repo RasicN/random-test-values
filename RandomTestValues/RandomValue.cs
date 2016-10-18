@@ -26,7 +26,8 @@ namespace RandomTestValues
                 {typeof(ulong), type => ULong()},
                 {typeof(ushort), type => UShort()},
                 {typeof(Guid), type => Guid()},
-                {typeof(DateTime), type => DateTime()}
+                {typeof(DateTime), type => DateTime()},
+                {typeof(TimeSpan), type => TimeSpan() }
             };
 
         private static readonly Random _Random = new Random();
@@ -215,9 +216,18 @@ namespace RandomTestValues
 
             return System.DateTime.Now;
         }
+
         public static Guid Guid()
         {
             return System.Guid.NewGuid();
+        }
+
+        public static TimeSpan TimeSpan()
+        {
+            var date1 = DateTime();
+            var date2 = DateTime();
+
+            return date1 > date2 ? date1.Subtract(date2) : date2.Subtract(date1);
         }
 
         public static T Object<T>() where T : new()

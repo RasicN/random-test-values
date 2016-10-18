@@ -32,5 +32,6 @@ namespace RandomTestValues.Tests
         public string GetOnly => "Test";
         public string[] Strings { get; set; }
         public TestObject2[] RTestObject2Array { get; set; }
+        public TimeSpan TimeSpan { get; set; }
     }
 }
