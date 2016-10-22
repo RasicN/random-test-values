@@ -193,12 +193,9 @@ namespace RandomTestValues
         /// <returns>A random DateTime</returns>
         public static DateTime DateTime()
         {
-            var timeSinceTheDiscoveryOfTheGalileanMoons = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons. Using system.DateTime.Min just made weird looking dates.
-
-            var timeInHoursSinceTheDiscoveryOfTheGalileanMoons = (int)timeSinceTheDiscoveryOfTheGalileanMoons.TotalHours;
-
-            var hoursToSubtract = Int(timeInHoursSinceTheDiscoveryOfTheGalileanMoons) * -1;
-
+            var timeSinceStartOfDateTime = System.DateTime.Now - new DateTime(1610, 1, 7); //discovery of galilean moons. Using system.DateTime.Min just made weird looking dates.
+            var timeInHoursSinceStartOfDateTime = (int)timeSinceStartOfDateTime.TotalHours;
+            var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1;
             return System.DateTime.Now.AddHours(hoursToSubtract);
         }
         public static Guid Guid()
@@ -245,7 +242,17 @@ namespace RandomTestValues
 
         public static T[] Array<T>(int? optionalLength = null)
         {
-            return List<T>(optionalLength).ToArray();
+            var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
+
+            var enumerable = IEnumerable<T>().Take(numberOfItems);
+
+            var randomArray = new T[numberOfItems];
+            for (int i = 0; i < numberOfItems; i++)
+            {
+                randomArray[i] = enumerable.ElementAt(i);
+            }
+
+            return randomArray;
         }
 
         public static List<T> List<T>(int? optionalLength = null)

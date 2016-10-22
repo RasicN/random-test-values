@@ -588,23 +588,5 @@ namespace RandomTestValues.Tests
 
             guid1.ShouldNotEqual(guid2);
         }
-
-        [TestMethod]
-        public void RandomArrayOfTypeShouldReturnARandomArrayOfTheSpecifiedSize()
-        {
-            var arrayOfEnums = RandomValue.Array<TestEnum>(250);
-
-            arrayOfEnums.Length.ShouldEqual(250);
-            arrayOfEnums.First().ShouldBeType<TestEnum>();
-        }
-
-        [TestMethod]
-        public void RandomArrayOfTypeShouldReturnARandom()
-        {
-            var arrayOfListOfCollectionOfULong = RandomValue.Array<List<Collection<ulong>>>();
-
-            arrayOfListOfCollectionOfULong.Length.ShouldBeInRange(1,10);
-            arrayOfListOfCollectionOfULong.First().ShouldBeType<List<Collection<ulong>>>();
-        }
     }
 }
