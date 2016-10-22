@@ -269,17 +269,7 @@ namespace RandomTestValues
 
         public static T[] Array<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
-
-            var enumerable = IEnumerable<T>().Take(numberOfItems);
-
-            var randomArray = new T[numberOfItems];
-            for (int i = 0; i < numberOfItems; i++)
-            {
-                randomArray[i] = enumerable.ElementAt(i);
-            }
-
-            return randomArray;
+            return Collection<T>(optionalLength).ToArray();
         }
 
         public static List<T> List<T>(int? optionalLength = null)
@@ -299,7 +289,7 @@ namespace RandomTestValues
 
         public static ICollection<T> ICollection<T>(int? optionalLength = null)
         {
-            var numberOfItems = optionalLength ?? _Random.Next(1, 10); //Do we care if this is empty or not? I sort of think it would be good if this would be occasionally empty. 
+            int numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
 
             var enumerable = IEnumerable<T>().Take(numberOfItems);
 
@@ -320,6 +310,24 @@ namespace RandomTestValues
 
                 yield return (T)method;
             }
+        }
+
+        public static Dictionary<TKey, TValue> Dictionary<TKey,TValue>(int? optionalLength = null)
+        {
+            return (Dictionary<TKey, TValue>)IDictionary<TKey, TValue>(optionalLength);
+        }
+
+        public static IDictionary<TKey, TValue> IDictionary<TKey, TValue>(int? optionalLength = null)
+        {
+            var length = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
+
+            var keys = IEnumerable<TKey>().Distinct().Take(length);
+
+            var values = ICollection<TValue>(length);
+
+            var keyValuePairs = keys.Zip(values, (key, value) => new KeyValuePair<TKey, TValue>(key, value));
+
+            return keyValuePairs.ToDictionary(key => key.Key, value => value.Value);
         }
 
         private static object GetMethodCallAssociatedWithType(Type propertyType)
@@ -350,13 +358,6 @@ namespace RandomTestValues
 
         private static object NullableMethodCall(Type propertyType, bool makeNull)
         {
-            // We can enable this if we want but the more I thought about it the more I disliked it.  If somone wants thier
-            // nullable field to be null then they can set it equal to null after the fact.  
-            // I want consistency in behavior especially when dealing with unit tests.
-            // if (makeNull)
-            // {
-            //     return null;
-            // }
             var baseType = propertyType.GetGenericArguments()[0];
             return GetMethodCallAssociatedWithType(baseType);
         }
@@ -364,6 +365,11 @@ namespace RandomTestValues
         private static bool IsNullableType(Type propertyType)
         {
             return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        private static int CreateRandomLengthIfOptionLengthIsNull(int? optionalLength)
+        {
+            return optionalLength ?? _Random.Next(1, 10);
         }
 
         private static object GetListMethodOfCollections(Type propertyType, Type genericType)
@@ -394,6 +400,14 @@ namespace RandomTestValues
             {
                 listMethod = ICollectionMethodCall(typeOfList);
             }
+            else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Dictionary<,>)))
+            {
+                listMethod = DictionaryMethodCall(type.GenericTypeArguments);
+            }
+            else if (type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+            {
+                listMethod = IDictionaryMethodCall(type.GenericTypeArguments);
+            }
             else if (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 listMethod = IEnumerableMethodCall(typeOfList);
@@ -410,6 +424,7 @@ namespace RandomTestValues
                        || propertyType.GetGenericTypeDefinition() == typeof(ICollection<>)
                        || propertyType.GetGenericTypeDefinition() == typeof(IList<>)
                        || propertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                       || propertyType.GetGenericTypeDefinition() == typeof(IDictionary<,>)
                        ));
         }
 
@@ -436,36 +451,47 @@ namespace RandomTestValues
 
         private static object ArrayMethodCall(Type typeOfList)
         {
-            return typeof(RandomValue).GetMethod("Array")
-               .MakeGenericMethod(typeOfList)
-               .Invoke(null, new object[] { null });
+            return InvokeCollectionMethod("Array", typeOfList);
         }
 
         private static object ListMethodCall(Type typeOfList)
         {
-            return typeof(RandomValue).GetMethod("List")
-               .MakeGenericMethod(typeOfList)
-               .Invoke(null, new object[] { null });
+            return InvokeCollectionMethod("List", typeOfList);
         }
 
         private static object IListMethodCall(Type typeOfList)
         {
-            return typeof(RandomValue).GetMethod("IList")
-                .MakeGenericMethod(typeOfList)
-                .Invoke(null, new object[] { null });
+            return InvokeCollectionMethod("IList", typeOfList);
         }
 
         private static object CollectionMethodCall(Type typeOfList)
         {
-            return typeof(RandomValue).GetMethod("Collection")
-                .MakeGenericMethod(typeOfList)
-                .Invoke(null, new object[] { null });
+            return InvokeCollectionMethod("Collection", typeOfList);
         }
 
         private static object ICollectionMethodCall(Type typeOfList)
         {
-            return typeof(RandomValue).GetMethod("ICollection")
-                .MakeGenericMethod(typeOfList)
+            return InvokeCollectionMethod("ICollection", typeOfList);
+        }
+
+        private static object DictionaryMethodCall(Type[] genericTypeArguments)
+        {
+            return typeof(RandomValue).GetMethod("Dictionary")
+                 .MakeGenericMethod(genericTypeArguments[0], genericTypeArguments[1])
+                 .Invoke(null, new object[] { null });
+        }
+
+        private static object IDictionaryMethodCall(Type[] genericTypeArguments)
+        {
+            return typeof(RandomValue).GetMethod("IDictionary")
+                 .MakeGenericMethod(genericTypeArguments[0], genericTypeArguments[1])
+                 .Invoke(null, new object[] { null });
+        }
+
+        private static object InvokeCollectionMethod(string nameOfMethod, Type type)
+        {
+            return typeof(RandomValue).GetMethod(nameOfMethod)
+                .MakeGenericMethod(type)
                 .Invoke(null, new object[] { null });
         }
 

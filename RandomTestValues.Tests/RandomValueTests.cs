@@ -635,5 +635,107 @@ namespace RandomTestValues.Tests
 
             timespan1.ShouldNotEqual(timespan2);
         }
+
+        [TestMethod]
+        public void AllItemsInTheKeysShouldBeUniqueForADictionary()
+        {
+            //There should be keys from 1 - 127.
+            var length = 127;
+
+            var result = RandomValue.Dictionary<sbyte, Guid>(length);
+
+            for (int i = 0; i < length; i++)
+            {
+                result.ContainsKey((sbyte)i).ShouldBeTrue();
+            }
+
+            result.Keys.First().ShouldBeType<sbyte>();
+            result.Values.First().ShouldBeType<Guid>();
+        }
+
+        [TestMethod]
+        public void TheLengthShouldBeBetween1and10ForDictionary()
+        {
+            var result = RandomValue.Dictionary<long, sbyte>();
+
+            result.Count().ShouldBeInRange(1, 10);
+
+            result.Keys.First().ShouldBeType<long>();
+            result.Values.First().ShouldBeType<sbyte>();
+        }
+
+        [TestMethod]
+        public void TheValuesShouldBeUniquForDictionary()
+        {
+            var result = RandomValue.Dictionary<int, Guid>();
+
+            var distinctValues = result.Values.Distinct();
+
+            distinctValues.Count().ShouldEqual(result.Count());
+
+            result.Keys.First().ShouldBeType<int>();
+            result.Values.First().ShouldBeType<Guid>();
+        }
+
+        [TestMethod]
+        public void AllItemsInTheKeysShouldBeUniqueForAIDictionary()
+        {
+            //There should be keys from 1 - 127.
+            var length = 127;
+
+            var result = RandomValue.IDictionary<sbyte, short>(length);
+
+            for (int i = 0; i < length; i++)
+            {
+                result.ContainsKey((sbyte)i).ShouldBeTrue();
+            }
+
+            result.Keys.First().ShouldBeType<sbyte>();
+            result.Values.First().ShouldBeType<short>();
+        }
+
+        [TestMethod]
+        public void TheLengthShouldBeBetween1and10ForIDictionary()
+        {
+            var result = RandomValue.IDictionary<DateTime, sbyte>();
+
+            result.Count().ShouldBeInRange(1, 10);
+
+            result.Keys.First().ShouldBeType<DateTime>();
+            result.Values.First().ShouldBeType<sbyte>();
+        }
+
+        [TestMethod]
+        public void TheValuesShouldBeUniqueForIDictionary()
+        {
+            var result = RandomValue.IDictionary<TimeSpan, ulong>();
+
+            var distinctValues = result.Values.Distinct();
+
+            distinctValues.Count().ShouldEqual(result.Count());
+
+            result.Keys.First().ShouldBeType<TimeSpan>();
+            result.Values.First().ShouldBeType<ulong>();
+        }
+
+        [TestMethod]
+        public void TheDictionaryShouldBeSetUpCorrectlyOnTheTestObject()
+        {
+            var result = RandomValue.Object<TestObject>();
+
+            result.RDictionary.Count().ShouldBeGreaterThanOrEqualTo(1);
+            result.RDictionary.Keys.First().ShouldBeType<DateTime>();
+            result.RDictionary.Values.First().ShouldBeType<int>();
+        }
+
+        [TestMethod]
+        public void TheIDictionaryShouldBeSetUpCorrectlyOnTheTestObject()
+        {
+            var result = RandomValue.Object<TestObject>();
+
+            result.RIDictionary.Count().ShouldBeGreaterThanOrEqualTo(1);
+            result.RIDictionary.Keys.First().ShouldBeType<TimeSpan>();
+            result.RIDictionary.Values.First().ShouldBeType<Collection<bool>>();
+        }
     }
 }
