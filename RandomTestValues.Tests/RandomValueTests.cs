@@ -328,6 +328,7 @@ namespace RandomTestValues.Tests
             testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
             testClass.Strings.ShouldNotBeEmpty();
             testClass.RTestObject2Array.ShouldNotBeEmpty();
+            testClass.TimeSpan.ShouldNotBeDefault();
 
             Should.Core.Assertions.Assert.True(
                 (int) testClass.REnum == (int) TestEnum.More
@@ -624,6 +625,15 @@ namespace RandomTestValues.Tests
             var guid2 = RandomValue.Guid();
 
             guid1.ShouldNotEqual(guid2);
+        }
+
+        [TestMethod]
+        public void RandomTimeSpanShouldGiveUniqueValuesForEachCall()
+        {
+            var timespan1 = RandomValue.TimeSpan();
+            var timespan2 = RandomValue.TimeSpan();
+
+            timespan1.ShouldNotEqual(timespan2);
         }
     }
 }
