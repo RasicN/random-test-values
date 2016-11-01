@@ -46,6 +46,42 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
+        public void RandomIntShouldBeWithinRangesOfMinimumANdMaximumPossibleValuesPassedIn()
+        {
+            var randomInt = RandomValue.Int(1000, 990);
+            var randomInt2 = RandomValue.Int(10000, 9000);
+            var randomInt3 = RandomValue.Int(10, 9);
+
+            randomInt.ShouldBeInRange(990, 1000);
+            randomInt2.ShouldBeInRange(9000, 10000);
+            randomInt3.ShouldBeInRange(9, 10);
+        }
+
+        [TestMethod]
+        public void RandomIntShouldOmitMinumumossibleValueIfIsHigherThanTheMaximumExpected()
+        {
+            var randomInt = RandomValue.Int(5, 15);
+            var randomInt2 = RandomValue.Int(10, 200);
+            var randomInt3 = RandomValue.Int(100, 30000);
+
+            randomInt.ShouldBeInRange(0, 5);
+            randomInt2.ShouldBeInRange(0, 10);
+            randomInt3.ShouldBeInRange(0, 100);
+        }
+
+        [TestMethod]
+        public void RandomIntShouldOmitMinumumossibleValueIfIsLowerThan0()
+        {
+            var randomInt = RandomValue.Int(5, -15);
+            var randomInt2 = RandomValue.Int(10, -200);
+            var randomInt3 = RandomValue.Int(100, -30000);
+
+            randomInt.ShouldBeInRange(0, 5);
+            randomInt2.ShouldBeInRange(0, 10);
+            randomInt3.ShouldBeInRange(0, 100);
+        }
+
+        [TestMethod]
         public void RandomByteShouldReturnSomethingDifferentMostOfTheTimeItIsCalled()
         {
             //Just comparing two would break occasionally. There are only 256 values in sbyte
@@ -273,6 +309,35 @@ namespace RandomTestValues.Tests
             var randomDecimal2 = RandomValue.Decimal();
 
             randomDecimal1.ShouldNotEqual(randomDecimal2);
+        }
+
+        [TestMethod]
+        public void RandomDecimalShouldReturnValuesSmallerThanMaximumEveryTimeIsCalled()
+        {
+            var maxDecimal1 = .3m;
+            var maxDecimal2 = 1.5m;
+            var maxDecimal3 = 9.8m;
+
+            var randomDecimal1 = RandomValue.Decimal(maxDecimal1);
+            var randomDecimal2 = RandomValue.Decimal(maxDecimal2);
+            var randomDecimal3 = RandomValue.Decimal(maxDecimal3);
+
+            randomDecimal1.ShouldBeLessThan(maxDecimal1 + .01m);
+            randomDecimal2.ShouldBeLessThan(maxDecimal2 + .01m);
+            randomDecimal3.ShouldBeLessThan(maxDecimal3 + .01m);
+        }
+
+        [TestMethod]
+        public void RandomDecimalShouldReturnARelevantValueWhenCalledWithAMaximumDecimal()
+        {
+            var maxDecimal1 = 520.3m;
+            var maxDecimal2 = 356.5m;
+
+            var randomDecimal1 = RandomValue.Decimal(maxDecimal1);
+            var randomDecimal2 = RandomValue.Decimal(maxDecimal2);
+
+            randomDecimal1.ShouldBeGreaterThan(1);
+            randomDecimal2.ShouldBeGreaterThan(1);
         }
 
         [TestMethod]
