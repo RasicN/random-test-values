@@ -33,5 +33,9 @@ namespace RandomTestValues.Tests
         public string[] Strings { get; set; }
         public TestObject2[] RTestObject2Array { get; set; }
         public TimeSpan TimeSpan { get; set; }
+
+        public IDictionary<TimeSpan, Collection<bool>> RIDictionary {get;set;}
+
+        public Dictionary<DateTime, int> RDictionary { get; set; }
     }
 }
