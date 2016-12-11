@@ -2,7 +2,6 @@
 <package >
   <metadata>
     <id>RandomTestValues</id>
-    <version>1.0.8</version>
     <authors>Joe Cisar, Thomas Sobieck</authors>
     <owners>Joe Cisar</owners>
     <licenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</licenseUrl>
@@ -17,6 +16,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="RandomTestValues\bin\Release\RandomTestValues.dll" target="lib\RandomTestValues.dll" />
+    <file src="RandomTestValues\bin\Release\netstandard1.0\RandomTestValues.dll" target="lib\RandomTestValues.dll" />
   </files>
 </package>

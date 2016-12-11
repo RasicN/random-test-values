@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RandomTestValues.Tests.ShouldExtensions;
-using Should;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace RandomTestValues.Tests
 
             randomString1.ShouldNotEqual(randomString2);
         }
-        
+
         [TestMethod]
         public void RandomIntShouldReturnSomethingDifferentEveryTimeItsCalled()
         {
@@ -235,7 +234,7 @@ namespace RandomTestValues.Tests
             var randomULong1 = RandomValue.ULong();
             var randomULong2 = RandomValue.ULong();
 
-            randomULong1.ShouldNotEqual(randomULong2); 
+            randomULong1.ShouldNotEqual(randomULong2);
         }
 
         [TestMethod]
@@ -268,7 +267,7 @@ namespace RandomTestValues.Tests
 
             randomFloat1.ShouldNotEqual(randomFloat2);
         }
-        
+
         [TestMethod]
         public void RandomDoubleShouldReturnSomethingDifferentEveryTimeItsCalled()
         {
@@ -395,11 +394,12 @@ namespace RandomTestValues.Tests
             testClass.RTestObject2Array.ShouldNotBeEmpty();
             testClass.TimeSpan.ShouldNotBeDefault();
 
-            Should.Core.Assertions.Assert.True(
-                (int) testClass.REnum == (int) TestEnum.More
-                || (int) testClass.REnum == (int) TestEnum.Most
-                || (int) testClass.REnum == (int) TestEnum.Mostest
-                || (int) testClass.REnum == (int) TestEnum.Mostestest);
+            var isEnum = ((int)testClass.REnum == (int)TestEnum.More
+                || (int)testClass.REnum == (int)TestEnum.Most
+                || (int)testClass.REnum == (int)TestEnum.Mostest
+                || (int)testClass.REnum == (int)TestEnum.Mostestest);
+
+            isEnum.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -408,9 +408,9 @@ namespace RandomTestValues.Tests
             var listOfNullableInt = RandomValue.List<int?>(25);
             var int1 = listOfNullableInt.ElementAt(0);
             var int2 = listOfNullableInt.ElementAt(1);
-            
-            Should.Core.Assertions.Assert.True(listOfNullableInt.All(x => x.HasValue));
-            
+
+            listOfNullableInt.All(x => x.HasValue).ShouldBeTrue();
+
             int1.ShouldNotEqual(int2);
         }
 
@@ -435,11 +435,12 @@ namespace RandomTestValues.Tests
             testClass.LazyShorts.ShouldNotBeEmpty();
             testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
 
-            Should.Core.Assertions.Assert.True(
-                (int)testClass.REnum == (int)TestEnum.More
+            var isEnum = ((int)testClass.REnum == (int)TestEnum.More
                 || (int)testClass.REnum == (int)TestEnum.Most
                 || (int)testClass.REnum == (int)TestEnum.Mostest
                 || (int)testClass.REnum == (int)TestEnum.Mostestest);
+
+            isEnum.ShouldBeTrue();
         }
 
         [TestMethod]
@@ -490,7 +491,7 @@ namespace RandomTestValues.Tests
         public void RandomCollectionOfTypeShouldReturnARandomCollectionOfTheSpecifiedSize()
         {
             var stringCollection = RandomValue.Collection<string>(25);
-            
+
             stringCollection.Count.ShouldEqual(25);
         }
 
@@ -804,3 +805,4 @@ namespace RandomTestValues.Tests
         }
     }
 }
+

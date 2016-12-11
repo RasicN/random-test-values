@@ -1,5 +1,6 @@
-﻿using System;
-using Should.Core.Assertions;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+
 
 namespace RandomTestValues.Tests.ShouldExtensions
 {
@@ -7,32 +8,32 @@ namespace RandomTestValues.Tests.ShouldExtensions
     {
         public static void ShouldNotBeDefault(this decimal value)
         {
-            Assert.NotEqual(new decimal(), value);
+            Assert.AreNotEqual(new decimal(), value);
         }
 
         public static void ShouldNotBeDefault(this string value)
         {
-            Assert.NotNull(value);
+            Assert.IsNotNull(value);
         }
 
         public static void ShouldNotBeDefault(this double value)
         {
-            Assert.NotEqual(new double(), value);
+            Assert.AreNotEqual(new double(), value);
         }
 
         public static void ShouldNotBeDefault(this int value)
         {
-            Assert.NotEqual(new int(), value);
+            Assert.AreNotEqual(new int(), value);
         }
 
         public static void ShouldNotBeDefault(this TimeSpan value)
         {
-            Assert.NotEqual(new TimeSpan(), value);
+            Assert.AreNotEqual(new TimeSpan(), value);
         }
 
         public static void ShouldNotBeDefault(this object value)
         {
-            Assert.NotNull(value);
+            Assert.IsNotNull(value);
         }
     }
 }

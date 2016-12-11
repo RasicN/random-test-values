@@ -248,7 +248,7 @@ namespace RandomTestValues
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
 
-            var properties = typeof(T).GetProperties();
+            var properties = typeof(T).GetRuntimeProperties().ToArray();
 
             if (properties.Length == 0)
             {
@@ -272,9 +272,9 @@ namespace RandomTestValues
             return genericObject;
         }
 
-        public static T Enum<T>() where T : struct, IConvertible
+        public static T Enum<T>()
         {
-            var fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
+            var fields = typeof(T).GetRuntimeFields().Where(x => x.IsPublic && x.IsStatic).ToArray();
 
             var index = _Random.Next(fields.Length);
 
@@ -378,7 +378,7 @@ namespace RandomTestValues
 
         private static bool IsNullableType(Type propertyType)
         {
-            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+            return propertyType.GetTypeInfo().IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         private static int CreateRandomLengthIfOptionLengthIsNull(int? optionalLength)
@@ -398,7 +398,7 @@ namespace RandomTestValues
             {
                 listMethod = ArrayMethodCall(propertyType.GetElementType());
             }
-            else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
+            else if (type.GetTypeInfo().IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
             {
                 listMethod = ListMethodCall(typeOfList);
             }
@@ -406,7 +406,7 @@ namespace RandomTestValues
             {
                 listMethod = IListMethodCall(typeOfList);
             }
-            else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>)))
+            else if (type.GetTypeInfo().IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>)))
             {
                 listMethod = CollectionMethodCall(typeOfList);
             }
@@ -414,7 +414,7 @@ namespace RandomTestValues
             {
                 listMethod = ICollectionMethodCall(typeOfList);
             }
-            else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Dictionary<,>)))
+            else if (type.GetTypeInfo().IsGenericType && (type.GetGenericTypeDefinition() == typeof(Dictionary<,>)))
             {
                 listMethod = DictionaryMethodCall(type.GenericTypeArguments);
             }
@@ -432,8 +432,10 @@ namespace RandomTestValues
 
         private static bool IsSupportedCollection(Type propertyType)
         {
-            return propertyType.GetInterface("ICollection") != null
-                   || (propertyType.IsGenericType &&
+            var hasImplementedICollection = propertyType.GetTypeInfo().ImplementedInterfaces.Any(x => x.Name == "ICollection");
+
+            return hasImplementedICollection
+                   || (propertyType.GetTypeInfo().IsGenericType &&
                        (propertyType.IsArray
                        || propertyType.GetGenericTypeDefinition() == typeof(ICollection<>)
                        || propertyType.GetGenericTypeDefinition() == typeof(IList<>)
@@ -444,21 +446,21 @@ namespace RandomTestValues
 
         private static object ObjectMethodCall(Type type)
         {
-            return typeof(RandomValue).GetMethod("Object")
+            return GetMethod("Object")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
         }
 
         private static object EnumMethodCall(Type type)
         {
-            return typeof(RandomValue).GetMethod("Enum")
+            return GetMethod("Enum")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
         }
 
         private static object IEnumerableMethodCall(Type type)
         {
-            return typeof(RandomValue).GetMethod("IEnumerable")
+            return GetMethod("IEnumerable")
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
         }
@@ -490,23 +492,34 @@ namespace RandomTestValues
 
         private static object DictionaryMethodCall(Type[] genericTypeArguments)
         {
-            return typeof(RandomValue).GetMethod("Dictionary")
+            var method = GetMethod("Dictionary");
+
+            return method
                  .MakeGenericMethod(genericTypeArguments[0], genericTypeArguments[1])
                  .Invoke(null, new object[] { null });
         }
 
         private static object IDictionaryMethodCall(Type[] genericTypeArguments)
         {
-            return typeof(RandomValue).GetMethod("IDictionary")
+            var method = GetMethod("IDictionary");
+
+            return method
                  .MakeGenericMethod(genericTypeArguments[0], genericTypeArguments[1])
                  .Invoke(null, new object[] { null });
         }
 
         private static object InvokeCollectionMethod(string nameOfMethod, Type type)
         {
-            return typeof(RandomValue).GetMethod(nameOfMethod)
+            var method = GetMethod(nameOfMethod);
+
+            return method
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { null });
+        }
+
+        private static MethodInfo GetMethod(string nameOfMethod)
+        {
+            return typeof(RandomValue).GetRuntimeMethods().First(x => x.Name == nameOfMethod);
         }
 
         private static SupportType GetSupportType(Type type)
@@ -515,7 +528,7 @@ namespace RandomTestValues
             {
                 return SupportType.Basic;
             }
-            if (type.IsEnum)
+            if (type.GetTypeInfo().IsEnum)
             {
                 return SupportType.Enum;
             }
@@ -527,12 +540,17 @@ namespace RandomTestValues
             {
                 return SupportType.Nullable;
             }
-            if (type.IsClass)
+            if (type.GetTypeInfo().IsClass)
             {
                 return SupportType.UserDefined;
             }
 
             return SupportType.NotSupported;
+        }
+
+        private static Type[] GetGenericArguments(this Type type)
+        {
+            return type.GetTypeInfo().IsGenericTypeDefinition ? type.GetTypeInfo().GenericTypeParameters : type.GetTypeInfo().GenericTypeArguments;
         }
     }
 
