@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace RandomTestValues
 {
@@ -244,6 +245,13 @@ namespace RandomTestValues
             return date1 > date2 ? date1.Subtract(date2) : date2.Subtract(date1);
         }
 
+        internal static T Object<T>(Func<T,T> functionToActOnRandom) where T : new()
+        {
+            var randomObject = Object<T>();
+
+            return functionToActOnRandom.Invoke(randomObject);
+        }
+
         public static T Object<T>() where T : new()
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
@@ -446,7 +454,8 @@ namespace RandomTestValues
 
         private static object ObjectMethodCall(Type type)
         {
-            return GetMethod("Object")
+            return typeof(RandomValue).GetRuntimeMethods().First(x => x.Name == "Object" && x.GetParameters()
+                .FirstOrDefault() == null)
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { });
         }
