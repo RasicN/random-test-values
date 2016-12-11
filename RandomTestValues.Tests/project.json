@@ -11,7 +11,7 @@
       "type": "platform",
       "version": "1.0.1"
     },
-    "RandomTestValues": "1.0.0-*"
+    "RandomTestValues": "*"
   },
 
   "frameworks": {

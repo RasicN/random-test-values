@@ -1,12 +1,29 @@
 ﻿{
-  "version": "1.0.0-*",
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0"
+    
   },
 
   "frameworks": {
     "netstandard1.0": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
+    },
+    "net45": {"dependencies": {}}
+  },
+
+  "packOptions": {
+    "summary": "This project is to speed up and clean up unit testing.",
+    "tags": [ "Unit-Testing", "TDD" ],
+    "owners": [ "Joe Cisar", "Thomas Anderson Sobieck" ],
+    "releaseNotes": "Converted RandomTestValues to a netstandard1.0 dll.",
+    "iconUrl": "https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png",
+    "projectUrl": "https://github.com/RasicN/random-test-values",
+    "licenseUrl": "https://github.com/RasicN/random-test-values/blob/master/LICENSE",
+    "requireLicenseAcceptance": false,
+    "files": {
+      "include": "RandomTestValues\\bin\\Release\\netstandard1.0\\RandomTestValues.dll"
     }
   }
 }
