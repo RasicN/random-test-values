@@ -4,11 +4,6 @@
       "fileName": "cmd.exe",
       "workingDirectory": ".",
       "arguments": "/c packageNuget.bat"
-    },
-    "packageNuget -672528891": {
-      "fileName": "cmd.exe",
-      "workingDirectory": ".",
-      "arguments": "/c packageNuget.bat"
     }
   }
 }

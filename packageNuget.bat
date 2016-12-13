@@ -1,1 +1,2 @@
-nuget pack Package.nuspec
+cd .\RandomTestValues
+dotnet pack -c RELEASE --output ../nupkgs
