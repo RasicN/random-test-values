@@ -4,6 +4,7 @@ using RandomTestValues.Tests.ShouldExtensions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using RandomTestValues.Tests.Types;
 
 namespace RandomTestValues.Tests
 {
@@ -802,6 +803,16 @@ namespace RandomTestValues.Tests
             result.RIDictionary.Count().ShouldBeGreaterThanOrEqualTo(1);
             result.RIDictionary.Keys.First().ShouldBeType<TimeSpan>();
             result.RIDictionary.Values.First().ShouldBeType<Collection<bool>>();
+        }
+
+        [TestMethod]
+        public void ThereShouldntBeAOutOfMemoryExceptionWhenAnObjectIsRecursive()
+        {
+            var result = RandomValue.Object<ObjectWithRecursiveProperty>();
+
+            result.RecursiveProperty.ShouldEqual(null);
+            result.RecursiveProperty2.ShouldEqual(null);
+            result.Int.ShouldNotBeDefault();
         }
     }
 }

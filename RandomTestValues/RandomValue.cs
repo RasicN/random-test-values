@@ -266,7 +266,7 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
-                if (prop.SetMethod == null)
+                if (PropertyHasNoSetter(prop) || PropertysTypeIsTheSameAsObject<T>(prop))
                 {
                     // Property doesn't have a public setter so let's ignore it
                     continue;
@@ -560,6 +560,16 @@ namespace RandomTestValues
         private static Type[] GetGenericArguments(this Type type)
         {
             return type.GetTypeInfo().IsGenericTypeDefinition ? type.GetTypeInfo().GenericTypeParameters : type.GetTypeInfo().GenericTypeArguments;
+        }
+
+        private static bool PropertysTypeIsTheSameAsObject<T>(PropertyInfo prop) where T : new()
+        {
+            return prop.PropertyType == typeof(T);
+        }
+
+        private static bool PropertyHasNoSetter(PropertyInfo prop)
+        {
+            return prop.SetMethod == null;
         }
     }
 
