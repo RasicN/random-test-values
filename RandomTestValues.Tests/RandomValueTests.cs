@@ -336,6 +336,15 @@ namespace RandomTestValues.Tests
 
             timespan1.ShouldNotEqual(timespan2);
         }
+
+        [TestMethod]
+        public void RandomDateTimeOffsetShouldGiveUniqueValuesForEachCall()
+        {
+            var offset1 = RandomValue.DateTimeOffset();
+            var offset2 = RandomValue.DateTimeOffset();
+
+            offset1.ShouldNotEqual(offset2);
+        }
     }
 }
 

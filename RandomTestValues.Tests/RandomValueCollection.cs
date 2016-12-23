@@ -356,5 +356,18 @@ namespace RandomTestValues.Tests
             result.Keys.First().ShouldBeType<TimeSpan>();
             result.Values.First().ShouldBeType<ulong>();
         }
+
+        [TestMethod]
+        public void TheValuesShouldBeUniqueForIDictionaryWithDateTimeOffset()
+        {
+            var result = RandomValue.IDictionary<DateTimeOffset, ulong>();
+
+            var distinctValues = result.Values.Distinct();
+
+            distinctValues.Count().ShouldEqual(result.Count());
+
+            result.Keys.First().ShouldBeType<DateTimeOffset>();
+            result.Values.First().ShouldBeType<ulong>();
+        }
     }
 }

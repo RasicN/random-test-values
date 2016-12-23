@@ -28,7 +28,8 @@ namespace RandomTestValues
                 {typeof(ushort), type => UShort()},
                 {typeof(Guid), type => Guid()},
                 {typeof(DateTime), type => DateTime()},
-                {typeof(TimeSpan), type => TimeSpan() }
+                {typeof(TimeSpan), type => TimeSpan() },
+                {typeof(DateTimeOffset), type => DateTimeOffset() }
             };
 
         private static readonly Random _Random = new Random();
@@ -232,9 +233,9 @@ namespace RandomTestValues
             return System.DateTime.Now;
         }
 
-        public static Guid Guid()
+        public static DateTimeOffset DateTimeOffset()
         {
-            return System.Guid.NewGuid();
+            return new DateTimeOffset(DateTime());
         }
 
         public static TimeSpan TimeSpan()
@@ -245,6 +246,11 @@ namespace RandomTestValues
             return date1 > date2 ? date1.Subtract(date2) : date2.Subtract(date1);
         }
 
+        public static Guid Guid()
+        {
+            return System.Guid.NewGuid();
+        }
+        
         internal static T Object<T>(Func<T,T> functionToActOnRandom) where T : new()
         {
             var randomObject = Object<T>();
