@@ -37,5 +37,7 @@ namespace RandomTestValues.Tests
         public IDictionary<TimeSpan, Collection<bool>> RIDictionary {get;set;}
 
         public Dictionary<DateTime, int> RDictionary { get; set; }
+
+        public DateTimeOffset DateTimeOffset { get; set; }
     }
 }

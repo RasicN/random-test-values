@@ -28,7 +28,8 @@ namespace RandomTestValues
                 {typeof(ushort), type => UShort()},
                 {typeof(Guid), type => Guid()},
                 {typeof(DateTime), type => DateTime()},
-                {typeof(TimeSpan), type => TimeSpan() }
+                {typeof(TimeSpan), type => TimeSpan() },
+                {typeof(DateTimeOffset), type => DateTimeOffset() }
             };
 
         private static readonly Random _Random = new Random();
@@ -232,9 +233,9 @@ namespace RandomTestValues
             return System.DateTime.Now;
         }
 
-        public static Guid Guid()
+        public static DateTimeOffset DateTimeOffset()
         {
-            return System.Guid.NewGuid();
+            return new DateTimeOffset(DateTime());
         }
 
         public static TimeSpan TimeSpan()
@@ -245,6 +246,11 @@ namespace RandomTestValues
             return date1 > date2 ? date1.Subtract(date2) : date2.Subtract(date1);
         }
 
+        public static Guid Guid()
+        {
+            return System.Guid.NewGuid();
+        }
+        
         internal static T Object<T>(Func<T,T> functionToActOnRandom) where T : new()
         {
             var randomObject = Object<T>();
@@ -266,7 +272,7 @@ namespace RandomTestValues
 
             foreach (var prop in properties)
             {
-                if (prop.SetMethod == null)
+                if (PropertyHasNoSetter(prop) || PropertysTypeIsTheSameAsObject<T>(prop))
                 {
                     // Property doesn't have a public setter so let's ignore it
                     continue;
@@ -560,6 +566,16 @@ namespace RandomTestValues
         private static Type[] GetGenericArguments(this Type type)
         {
             return type.GetTypeInfo().IsGenericTypeDefinition ? type.GetTypeInfo().GenericTypeParameters : type.GetTypeInfo().GenericTypeArguments;
+        }
+
+        private static bool PropertysTypeIsTheSameAsObject<T>(PropertyInfo prop) where T : new()
+        {
+            return prop.PropertyType == typeof(T);
+        }
+
+        private static bool PropertyHasNoSetter(PropertyInfo prop)
+        {
+            return prop.SetMethod == null;
         }
     }
 
