@@ -327,7 +327,12 @@ namespace RandomTestValues
 
         public static IEnumerable<T> IEnumerable<T>()
         {
-            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(null);
+            return IEnumerable<T>(null);
+        }
+
+        public static IEnumerable<T> IEnumerable<T>(int? optionalLength)
+        {
+            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
 
             return LazyIEnumerable<T>().Take(numberOfItems);
         }

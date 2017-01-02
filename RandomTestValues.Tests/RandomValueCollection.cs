@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RandomTestValues.Tests.ShouldExtensions;
 using System;
 using System.Collections.Generic;
@@ -203,6 +204,36 @@ namespace RandomTestValues.Tests
 
             randomEnums.First().ShouldBeType<TestEnum>();
             randomEnums.Count().ShouldBeInRange(1, 10);
+        }
+
+        [TestMethod]
+        public void RandomIEnumerablesShouldHaveDifferentCounts()
+        {
+            var countOfTimesThatTheEnumsWereTheSameLength = 0;
+
+            for (int i = 0; i < 10; i++)
+            {
+                var randomEnums1 = RandomValue.IEnumerable<TestEnum>();
+                var randomEnums2 = RandomValue.IEnumerable<TestEnum>();
+
+                if(randomEnums1.Count() == randomEnums2.Count())
+                {
+                    countOfTimesThatTheEnumsWereTheSameLength++;
+                }
+            }
+
+            countOfTimesThatTheEnumsWereTheSameLength.Should().BeLessOrEqualTo(4);
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnARandomNumberOfItemsWithAMaximumOf1000()
+        {
+            var length = 1000;
+
+            var randomEnums = RandomValue.IEnumerable<TestEnum>(length);
+
+            randomEnums.First().ShouldBeType<TestEnum>();
+            randomEnums.Count().ShouldEqual(length);
         }
 
         [TestMethod]

@@ -85,9 +85,9 @@ namespace RandomTestValues.Tests
         {
             var testClass = RandomValue.Object<TestObject>();
 
-            var enumeration = testClass.CrazyBools.Take(3);
+            var enumeration = testClass.CrazyBools;
 
-            enumeration.Count().ShouldEqual(3);
+            enumeration.Count().ShouldBeInRange(1, 10);
             enumeration.First().ShouldBeType<List<Collection<bool>>>();
         }
 
