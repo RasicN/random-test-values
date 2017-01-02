@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace RandomTestValues
 {
@@ -317,9 +316,9 @@ namespace RandomTestValues
 
         public static ICollection<T> ICollection<T>(int? optionalLength = null)
         {
-            int numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
+            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
 
-            var enumerable = IEnumerable<T>().Take(numberOfItems);
+            var enumerable = LazyIEnumerable<T>().Take(numberOfItems);
 
             var randomList = new Collection<T>(enumerable.ToList());
 
@@ -327,6 +326,13 @@ namespace RandomTestValues
         }
 
         public static IEnumerable<T> IEnumerable<T>()
+        {
+            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(null);
+
+            return LazyIEnumerable<T>().Take(numberOfItems);
+        }
+
+        public static IEnumerable<T> LazyIEnumerable<T>()
         {
             var type = typeof(T);
 
@@ -349,7 +355,7 @@ namespace RandomTestValues
         {
             var length = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
 
-            var keys = IEnumerable<TKey>().Distinct().Take(length);
+            var keys = LazyIEnumerable<TKey>().Distinct().Take(length);
 
             var values = ICollection<TValue>(length);
 
