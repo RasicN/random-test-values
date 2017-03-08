@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RandomTestValues.Tests.ShouldExtensions;
 using System;
 using System.Collections.Generic;
@@ -197,9 +198,48 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void RandomIEnumerableShouldReturnALazyRandomCollection()
+        public void RandomIEnumerableShouldReturnARandomNumberOfItems()
         {
-            var randomCollectionOfBrendans = RandomValue.IEnumerable<long>();
+            var randomEnums = RandomValue.IEnumerable<TestEnum>();
+
+            randomEnums.First().ShouldBeType<TestEnum>();
+            randomEnums.Count().ShouldBeInRange(1, 10);
+        }
+
+        [TestMethod]
+        public void RandomIEnumerablesShouldHaveDifferentCounts()
+        {
+            var countOfTimesThatTheEnumsWereTheSameLength = 0;
+
+            for (int i = 0; i < 10; i++)
+            {
+                var randomEnums1 = RandomValue.IEnumerable<TestEnum>();
+                var randomEnums2 = RandomValue.IEnumerable<TestEnum>();
+
+                if(randomEnums1.Count() == randomEnums2.Count())
+                {
+                    countOfTimesThatTheEnumsWereTheSameLength++;
+                }
+            }
+
+            countOfTimesThatTheEnumsWereTheSameLength.Should().BeLessOrEqualTo(4);
+        }
+
+        [TestMethod]
+        public void RandomIEnumerableShouldReturnARandomNumberOfItemsWithAMaximumOf1000()
+        {
+            var length = 1000;
+
+            var randomEnums = RandomValue.IEnumerable<TestEnum>(length);
+
+            randomEnums.First().ShouldBeType<TestEnum>();
+            randomEnums.Count().ShouldEqual(length);
+        }
+
+        [TestMethod]
+        public void RandomLazyIEnumerableShouldReturnALazyRandomCollection()
+        {
+            var randomCollectionOfBrendans = RandomValue.LazyIEnumerable<long>();
 
             var randomBrendans = randomCollectionOfBrendans.Take(10);
 
@@ -209,9 +249,9 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void RandomIEnumerableShouldReturnLazyEnum()
+        public void RandomLazyIEnumerableShouldReturnLazyEnum()
         {
-            var randomCollectionOfTestEnums = RandomValue.IEnumerable<TestEnum>();
+            var randomCollectionOfTestEnums = RandomValue.LazyIEnumerable<TestEnum>();
 
             var randomEnums = randomCollectionOfTestEnums.Take(1000);
 
@@ -224,9 +264,9 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void RandomIEnumerableShouldReturnLazyObject()
+        public void RandomLazyIEnumerableShouldReturnLazyObject()
         {
-            var randomCollectionOfTestObjects = RandomValue.IEnumerable<TestObject>();
+            var randomCollectionOfTestObjects = RandomValue.LazyIEnumerable<TestObject>();
 
             var randomObjects = randomCollectionOfTestObjects.Take(4);
 
@@ -235,26 +275,19 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfEnumerables()
+        public void RandomLazyIEnumrableOfIEnumerableShouldReturnAEnumerableOfEnumerablesThatIsntLazy()
         {
-            var randomCollectionOfCollections = RandomValue.IEnumerable<IEnumerable<short>>().Take(29);
+            var randomCollectionOfCollections = RandomValue.LazyIEnumerable<IEnumerable<short>>().Take(29);
 
             randomCollectionOfCollections.Count().ShouldEqual(29);
 
-            var itemsInRandomCollection = randomCollectionOfCollections.First().Where(x => x < 3000).Take(10);
-
-            itemsInRandomCollection.Count().ShouldEqual(10);
-            itemsInRandomCollection.Where(x => x >= 3000).ShouldBeEmpty();
-
-            var itemsInSecondRandomCollection = randomCollectionOfCollections.Last().Where(x => x < 3000 & x > 1000).Take(100);
-
-            itemsInSecondRandomCollection.TakeWhile(x => x < 3000 & x > 1000).Count().ShouldEqual(100);
+            randomCollectionOfCollections.First().Count().ShouldBeInRange(0, 10);
         }
 
         [TestMethod]
-        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfList()
+        public void RandomLazyIEnumrableOfIEnumerableShouldReturnAEnumerableOfList()
         {
-            var randomCollectionOfCollections = RandomValue.IEnumerable<List<uint>>().Take(9);
+            var randomCollectionOfCollections = RandomValue.LazyIEnumerable<List<uint>>().Take(9);
 
             randomCollectionOfCollections.Count().ShouldEqual(9);
             randomCollectionOfCollections.First().ShouldBeType<List<uint>>();
@@ -264,9 +297,9 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void RandomIEnumrableOfIEnumerableShouldReturnAEnumerableOfCollection()
+        public void RandomLazyIEnumrableOfIEnumerableShouldReturnAEnumerableOfCollection()
         {
-            var randomCollectionOfCollections = RandomValue.IEnumerable<ICollection<uint>>().Take(9);
+            var randomCollectionOfCollections = RandomValue.LazyIEnumerable<ICollection<uint>>().Take(9);
 
             randomCollectionOfCollections.Count().ShouldEqual(9);
             randomCollectionOfCollections.First().ShouldBeType<Collection<uint>>();

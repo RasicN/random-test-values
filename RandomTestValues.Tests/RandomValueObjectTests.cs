@@ -36,8 +36,8 @@ namespace RandomTestValues.Tests
             testClass.RDecimal2.ShouldNotBeDefault();
             testClass.RDouble2.ShouldNotBeDefault();
             testClass.REnumCollection.ShouldNotBeEmpty();
-            testClass.LazyShorts.ShouldNotBeEmpty();
-            testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
+            testClass.Shorts.ShouldNotBeEmpty();
+            testClass.Shorts.Count().ShouldBeInRange(0, 10);
             testClass.Strings.ShouldNotBeEmpty();
             testClass.RTestObject2Array.ShouldNotBeEmpty();
             testClass.TimeSpan.ShouldNotBeDefault();
@@ -69,8 +69,8 @@ namespace RandomTestValues.Tests
             testClass.RDecimal2.ShouldNotBeDefault();
             testClass.RDouble2.ShouldNotBeDefault();
             testClass.REnumCollection.ShouldNotBeEmpty();
-            testClass.LazyShorts.ShouldNotBeEmpty();
-            testClass.LazyShorts.Take(10).Count().ShouldEqual(10);
+            testClass.Shorts.ShouldNotBeEmpty();
+            testClass.Shorts.Count().ShouldBeInRange(0, 10);
 
             var isEnum = ((int)testClass.REnum == (int)TestEnum.More
                 || (int)testClass.REnum == (int)TestEnum.Most
@@ -85,9 +85,9 @@ namespace RandomTestValues.Tests
         {
             var testClass = RandomValue.Object<TestObject>();
 
-            var enumeration = testClass.CrazyBools.Take(3);
+            var enumeration = testClass.CrazyBools;
 
-            enumeration.Count().ShouldEqual(3);
+            enumeration.Count().ShouldBeInRange(1, 10);
             enumeration.First().ShouldBeType<List<Collection<bool>>>();
         }
 

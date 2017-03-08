@@ -23,7 +23,7 @@ namespace RandomTestValues.Tests
         public Collection<int?> RCollection { get; set; }
         public ICollection<bool?> RCollection2 { get; set; }
         public DateTime? RDateTime { get; set; }
-        public IEnumerable<short?> LazyShorts { get; set; }
+        public IEnumerable<short?> Shorts { get; set; }
         public IEnumerable<List<Collection<bool?>>> CrazyBools { get; set; }
         public string GetOnly => "Test";
     }
