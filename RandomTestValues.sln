@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC5329FC-F5B4-4E13-843D-1718E9A0A2DA}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,9 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		packageNuget.bat = packageNuget.bat
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RandomTestValues", "RandomTestValues\RandomTestValues.xproj", "{A30C5361-28BA-4C26-AC55-92278E4DD701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomTestValues", "RandomTestValues\RandomTestValues.csproj", "{A30C5361-28BA-4C26-AC55-92278E4DD701}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RandomTestValues.Tests", "RandomTestValues.Tests\RandomTestValues.Tests.xproj", "{9D96692A-B862-4729-A712-2714F889ABE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomTestValues.Tests", "RandomTestValues.Tests\RandomTestValues.Tests.csproj", "{9D96692A-B862-4729-A712-2714F889ABE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
