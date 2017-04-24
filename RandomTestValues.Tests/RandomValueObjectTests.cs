@@ -140,5 +140,43 @@ namespace RandomTestValues.Tests
             result.RecursiveProperty2.ShouldEqual(null);
             result.Int.ShouldNotBeDefault();
         }
+
+        [TestMethod]
+        public void RandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepth()
+        {
+            var result = RandomValue.Object<ObjectWithRecursiveProperty>(recursiveDepth:2);
+
+            // 1 level depth
+            result.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.ShouldNotBeDefault();
+
+            // 2 level depth
+            result.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
+
+            // 3 level depth (should now be null as recursiveDepth:2)
+            result.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
+            result.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
+            result.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
+        public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepth()
+        {
+            var result = RandomValue.Object<ObjectWithRecursiveList>(recursiveDepth: 2);
+
+            // 1 level depth
+            result.RecursiveList.ShouldNotBeDefault();
+            result.Int.ShouldNotBeDefault();
+
+            // 2 level depth
+            result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+            result.RecursiveList[0].Int.ShouldNotBeDefault();
+
+            // 3 level depth (should now be null as recursiveDepth:2)
+            result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+            result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+        }
     }
 }
