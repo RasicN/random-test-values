@@ -26,6 +26,11 @@ namespace RandomTestValues.Tests.ShouldExtensions
             value.Should().BeInRange(min, max);
         }
 
+        public static void ShouldBeInRange(this double value, double min, double max)
+        {
+            value.Should().BeInRange(min, max);
+        }
+
         public static void ShouldBeTrue(this bool value)
         {
             value.Should().BeTrue();

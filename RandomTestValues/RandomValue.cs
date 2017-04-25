@@ -33,6 +33,8 @@ namespace RandomTestValues
 
         private static readonly Random _Random = new Random();
 
+        public static bool IncludeNullAsPossibleValueForNullables = false;
+
         /// <summary>
         /// Use for getting a random string for your unit tests.  This is basically a Guid.ToString() so it will
         /// not have any formatting and it will have "-"
@@ -389,6 +391,8 @@ namespace RandomTestValues
 
         private static object NullableMethodCall(Type propertyType, bool makeNull, int recursiveDepth)
         {
+            if (IncludeNullAsPossibleValueForNullables && Bool())
+                return null;
             var baseType = Nullable.GetUnderlyingType(propertyType);
             return GetMethodCallAssociatedWithType(baseType, recursiveDepth);
         }
