@@ -52,8 +52,9 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void NullableValuesWillBePopulatedWithObject()
+        public void NullableValuesWillAlwaysBePopulatedWithObjectWhenNotAllowingNulls()
         {
+            RandomValue.IncludeNullAsPossibleValueForNullables = false;
             var testClass = RandomValue.Object<NullableTestObject>();
 
             testClass.RDecimal.ShouldNotBeDefault();
@@ -78,6 +79,114 @@ namespace RandomTestValues.Tests
                 || (int)testClass.REnum == (int)TestEnum.Mostestest);
 
             isEnum.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void NullableValuesWillSometimesBePopulatedWithNullWhenAllowingNulls()
+        {
+            RandomValue.IncludeNullAsPossibleValueForNullables = true;
+
+            bool decimalWasNullAtleastOnce = false;
+            bool doubleWasNullAtleastOnce = false;
+            bool intWasNullAtleastOnce = false;
+            bool intCollectionValueWasNullAtleastOnce = false;
+            bool boolCollectionValueWasNullAtleastOnce = false;
+            bool doubleListValueWasNullAtleastOnce = false;
+            bool dateTimeWasNullAtleastOnce = false;
+            bool guidWasNullAtleastOnce = false;
+            bool enumListValueWasNullAtleastOnce = false;
+            bool int2WasNullAtleastOnce = false;
+            bool decimal2WasNullAtleastOnce = false;
+            bool double2WasNullAtleastOnce = false;
+            bool enumCollectionValueWasNullAtleastOnce = false;
+            bool enumerableShortValueWasNullAtleastOnce = false;
+            bool enumWasNullAtleastOnce = false;
+
+            bool decimalWasNotNullAtleastOnce = false;
+            bool doubleWasNotNullAtleastOnce = false;
+            bool intWasNotNullAtleastOnce = false;
+            bool intCollectionValueWasNotNullAtleastOnce = false;
+            bool boolCollectionValueWasNotNullAtleastOnce = false;
+            bool doubleListValueWasNotNullAtleastOnce = false;
+            bool dateTimeWasNotNullAtleastOnce = false;
+            bool guidWasNotNullAtleastOnce = false;
+            bool enumListValueWasNotNullAtleastOnce = false;
+            bool int2WasNotNullAtleastOnce = false;
+            bool decimal2WasNotNullAtleastOnce = false;
+            bool double2WasNotNullAtleastOnce = false;
+            bool enumCollectionValueWasNotNullAtleastOnce = false;
+            bool enumerableShortValueWasNotNullAtleastOnce = false;
+            bool enumWasNotNullAtleastOnce = false;
+
+            for ( int n = 0; n < 100; n++)
+            {
+                var testClass = RandomValue.Object<NullableTestObject>();
+
+                decimalWasNullAtleastOnce |= testClass.RDecimal == null;
+                doubleWasNullAtleastOnce |= testClass.RDouble == null;
+                intWasNullAtleastOnce |= testClass.RInt == null;
+                intCollectionValueWasNullAtleastOnce |= testClass.RCollection.Any(i => i == null);
+                boolCollectionValueWasNullAtleastOnce |= testClass.RCollection2.Any(b => b == null);
+                doubleListValueWasNullAtleastOnce |= testClass.RList.Any(d => d == null);
+                dateTimeWasNullAtleastOnce |= testClass.RDateTime == null;
+                guidWasNullAtleastOnce |= testClass.RGuid == null;
+                enumListValueWasNullAtleastOnce |= testClass.REnumList.Any(e => e == null);
+                int2WasNullAtleastOnce |= testClass.RInt2 == null;
+                decimal2WasNullAtleastOnce |= testClass.RDecimal2 == null;
+                double2WasNullAtleastOnce |= testClass.RDouble2 == null;
+                enumCollectionValueWasNullAtleastOnce |= testClass.REnumCollection.Any(e => e == null);
+                enumerableShortValueWasNullAtleastOnce |= testClass.Shorts.Any(s => s == null);
+                enumWasNullAtleastOnce |= testClass.REnum == null;
+
+
+                decimalWasNotNullAtleastOnce |= testClass.RDecimal != null;
+                doubleWasNotNullAtleastOnce |= testClass.RDouble != null;
+                intWasNotNullAtleastOnce |= testClass.RInt != null;
+                intCollectionValueWasNotNullAtleastOnce |= testClass.RCollection.Any(i => i != null);
+                boolCollectionValueWasNotNullAtleastOnce |= testClass.RCollection2.Any(b => b != null);
+                doubleListValueWasNotNullAtleastOnce |= testClass.RList.Any(d => d != null);
+                dateTimeWasNotNullAtleastOnce |= testClass.RDateTime != null;
+                guidWasNotNullAtleastOnce |= testClass.RGuid != null;
+                enumListValueWasNotNullAtleastOnce |= testClass.REnumList.Any(e => e != null);
+                int2WasNotNullAtleastOnce |= testClass.RInt2 != null;
+                decimal2WasNotNullAtleastOnce |= testClass.RDecimal2 != null;
+                double2WasNotNullAtleastOnce |= testClass.RDouble2 != null;
+                enumCollectionValueWasNotNullAtleastOnce |= testClass.REnumCollection.Any(e => e != null);
+                enumerableShortValueWasNotNullAtleastOnce |= testClass.Shorts.Any(s => s != null);
+                enumWasNotNullAtleastOnce |= testClass.REnum != null;
+            }
+
+            decimalWasNullAtleastOnce.ShouldBeTrue();
+            doubleWasNullAtleastOnce.ShouldBeTrue();
+            intWasNullAtleastOnce.ShouldBeTrue();
+            intCollectionValueWasNullAtleastOnce.ShouldBeTrue();
+            boolCollectionValueWasNullAtleastOnce.ShouldBeTrue();
+            doubleListValueWasNullAtleastOnce.ShouldBeTrue();
+            dateTimeWasNullAtleastOnce.ShouldBeTrue();
+            guidWasNullAtleastOnce.ShouldBeTrue();
+            enumListValueWasNullAtleastOnce.ShouldBeTrue();
+            int2WasNullAtleastOnce.ShouldBeTrue();
+            decimal2WasNullAtleastOnce.ShouldBeTrue();
+            double2WasNullAtleastOnce.ShouldBeTrue();
+            enumCollectionValueWasNullAtleastOnce.ShouldBeTrue();
+            enumerableShortValueWasNullAtleastOnce.ShouldBeTrue();
+            enumWasNullAtleastOnce.ShouldBeTrue();
+
+            decimalWasNotNullAtleastOnce.ShouldBeTrue();
+            doubleWasNotNullAtleastOnce.ShouldBeTrue();
+            intWasNotNullAtleastOnce.ShouldBeTrue();
+            intCollectionValueWasNotNullAtleastOnce.ShouldBeTrue();
+            boolCollectionValueWasNotNullAtleastOnce.ShouldBeTrue();
+            doubleListValueWasNotNullAtleastOnce.ShouldBeTrue();
+            dateTimeWasNotNullAtleastOnce.ShouldBeTrue();
+            guidWasNotNullAtleastOnce.ShouldBeTrue();
+            enumListValueWasNotNullAtleastOnce.ShouldBeTrue();
+            int2WasNotNullAtleastOnce.ShouldBeTrue();
+            decimal2WasNotNullAtleastOnce.ShouldBeTrue();
+            double2WasNotNullAtleastOnce.ShouldBeTrue();
+            enumCollectionValueWasNotNullAtleastOnce.ShouldBeTrue();
+            enumerableShortValueWasNotNullAtleastOnce.ShouldBeTrue();
+            enumWasNotNullAtleastOnce.ShouldBeTrue();
         }
 
         [TestMethod]

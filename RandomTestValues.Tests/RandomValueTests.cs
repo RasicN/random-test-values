@@ -345,6 +345,16 @@ namespace RandomTestValues.Tests
 
             offset1.ShouldNotEqual(offset2);
         }
+
+        [TestMethod]
+        public void RandomBoolIsStatisticallyDistributed5050()
+        {
+            var total = 1000000;
+            var trueCases = Enumerable.Repeat(0, total).Where(i => RandomValue.Bool()).Count();
+            var ratio = trueCases / (double) total;
+
+            ratio.ShouldBeInRange(0.49, 0.51);
+        }
     }
 }
 
