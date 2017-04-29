@@ -228,12 +228,12 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomIEnumerableShouldReturnARandomNumberOfItemsWithAMaximumOf1000()
         {
-            var length = 5;
+            var length = 1000;
 
             var randomEnums = RandomValue.IEnumerable<TestEnum>(length);
 
             randomEnums.First().ShouldBeType<TestEnum>();
-            randomEnums.Count().ShouldBeInRange(1, length);
+            randomEnums.Count().ShouldEqual(length);
         }
 
         [TestMethod]
