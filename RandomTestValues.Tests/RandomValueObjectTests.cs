@@ -144,7 +144,7 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepth()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveProperty>(recursiveDepth:2);
+            var result = RandomValue.Object<ObjectWithRecursiveProperty>(recursiveDepth: 2);
 
             // 1 level depth
             result.RecursiveProperty.ShouldNotBeDefault();
@@ -161,22 +161,208 @@ namespace RandomTestValues.Tests
             result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
         }
 
+        //[TestMethod]
+        //public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepth()
+        //{
+        //    var result = RandomValue.Object<ObjectWithRecursiveCollections>(recursiveDepth: 2);
+
+        //    // 1 level depth
+        //    result.RecursiveList.ShouldNotBeDefault();
+        //    result.Int.ShouldNotBeDefault();
+
+        //    // 2 level depth
+        //    result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+        //    result.RecursiveList[0].Int.ShouldNotBeDefault();
+
+        //    // 3 level depth (should now be null as recursiveDepth:2)
+        //    result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+        //    result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+        //}
+
         [TestMethod]
-        public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepth()
+        public void RandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveList>(recursiveDepth: 2);
+            var result = RandomValue.Object<ObjectWithRecursiveProperty>(new RandomValueSettings { RecursiveDepth = 2 });
 
             // 1 level depth
-            result.RecursiveList.ShouldNotBeDefault();
-            result.Int.ShouldNotBeDefault();
+            result.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.ShouldNotBeDefault();
 
             // 2 level depth
-            result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
-            result.RecursiveList[0].Int.ShouldNotBeDefault();
+            result.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
 
             // 3 level depth (should now be null as recursiveDepth:2)
-            result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
-            result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+            result.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
+            result.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
+            result.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+        }
+
+        //[TestMethod]
+        //public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
+        //{
+        //    var result = RandomValue.Object<ObjectWithRecursiveCollections>(new RandomValueSettings { RecursiveDepth = 2 });
+
+        //    // 1 level depth
+        //    result.RecursiveList.ShouldNotBeDefault();
+        //    result.Int.ShouldNotBeDefault();
+
+        //    // 2 level depth
+        //    result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+        //    result.RecursiveList[0].Int.ShouldNotBeDefault();
+
+        //    // 3 level depth (should now be null as recursiveDepth:2)
+        //    result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+        //    result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+        //}
+
+        [TestMethod]
+        public void NullableValuesWillSometimesBePopulatedWithNullWhenAllowingNulls()
+        {
+            var decimalWasNullAtleastOnce = false;
+            var doubleWasNullAtleastOnce = false;
+            var intWasNullAtleastOnce = false;
+            var dateTimeWasNullAtleastOnce = false;
+            var guidWasNullAtleastOnce = false;
+            var int2WasNullAtleastOnce = false;
+            var decimal2WasNullAtleastOnce = false;
+            var double2WasNullAtleastOnce = false;
+            var enumWasNullAtleastOnce = false;
+
+
+            var settings = new RandomValueSettings { IncludeNullAsPossibleValueForNullables = true };
+
+            for (int n = 0; n < 100; n++)
+            {
+                var testClass = RandomValue.Object<NullableTestObject>(settings);
+
+                decimalWasNullAtleastOnce |= testClass.RDecimal == null;
+                doubleWasNullAtleastOnce |= testClass.RDouble == null;
+                intWasNullAtleastOnce |= testClass.RInt == null;
+                dateTimeWasNullAtleastOnce |= testClass.RDateTime == null;
+                guidWasNullAtleastOnce |= testClass.RGuid == null;
+                int2WasNullAtleastOnce |= testClass.RInt2 == null;
+                decimal2WasNullAtleastOnce |= testClass.RDecimal2 == null;
+                double2WasNullAtleastOnce |= testClass.RDouble2 == null;
+                enumWasNullAtleastOnce |= testClass.REnum == null;
+            }
+
+            decimalWasNullAtleastOnce.ShouldBeTrue();
+            doubleWasNullAtleastOnce.ShouldBeTrue();
+            intWasNullAtleastOnce.ShouldBeTrue();
+            dateTimeWasNullAtleastOnce.ShouldBeTrue();
+            guidWasNullAtleastOnce.ShouldBeTrue();
+            int2WasNullAtleastOnce.ShouldBeTrue();
+            decimal2WasNullAtleastOnce.ShouldBeTrue();
+            double2WasNullAtleastOnce.ShouldBeTrue();
+            enumWasNullAtleastOnce.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void NullableValuesWillSometimesNotBePopulatedWithNullWhenAllowingNulls()
+        {
+            var decimalWasNotNullAtleastOnce = false;
+            var doubleWasNotNullAtleastOnce = false;
+            var intWasNotNullAtleastOnce = false;
+            var int2WasNotNullAtleastOnce = false;
+            var decimal2WasNotNullAtleastOnce = false;
+            var dateTimeWasNotNullAtleastOnce = false;
+            var guidWasNotNullAtleastOnce = false;
+            var double2WasNotNullAtleastOnce = false;
+            var enumWasNotNullAtleastOnce = false;
+
+            var settings = new RandomValueSettings { IncludeNullAsPossibleValueForNullables = true };
+
+            for (int n = 0; n < 100; n++)
+            {
+                var testClass = RandomValue.Object<NullableTestObject>(settings);
+
+                decimalWasNotNullAtleastOnce |= testClass.RDecimal != null;
+                doubleWasNotNullAtleastOnce |= testClass.RDouble != null;
+                intWasNotNullAtleastOnce |= testClass.RInt != null;
+                dateTimeWasNotNullAtleastOnce |= testClass.RDateTime != null;
+                guidWasNotNullAtleastOnce |= testClass.RGuid != null;
+                int2WasNotNullAtleastOnce |= testClass.RInt2 != null;
+                decimal2WasNotNullAtleastOnce |= testClass.RDecimal2 != null;
+                double2WasNotNullAtleastOnce |= testClass.RDouble2 != null;
+                enumWasNotNullAtleastOnce |= testClass.REnum != null;
+            }
+
+            decimalWasNotNullAtleastOnce.ShouldBeTrue();
+            doubleWasNotNullAtleastOnce.ShouldBeTrue();
+            intWasNotNullAtleastOnce.ShouldBeTrue();
+            dateTimeWasNotNullAtleastOnce.ShouldBeTrue();
+            guidWasNotNullAtleastOnce.ShouldBeTrue();
+            int2WasNotNullAtleastOnce.ShouldBeTrue();
+            decimal2WasNotNullAtleastOnce.ShouldBeTrue();
+            double2WasNotNullAtleastOnce.ShouldBeTrue();
+            enumWasNotNullAtleastOnce.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void NullableCollectionsWillSometimesNotBePopulatedWithNullWhenAllowingNulls()
+        {
+            var intCollectionValueWasNotNullAtleastOnce = false;
+            var boolCollectionValueWasNotNullAtleastOnce = false;
+            var doubleListValueWasNotNullAtleastOnce = false;
+            var enumListValueWasNotNullAtleastOnce = false;
+            var enumCollectionValueWasNotNullAtleastOnce = false;
+            var enumerableShortValueWasNotNullAtleastOnce = false;
+
+            var settings = new RandomValueSettings { IncludeNullAsPossibleValueForNullables = true };
+
+            for (int n = 0; n < 100; n++)
+            {
+                var testClass = RandomValue.Object<NullableTestObject>(settings);
+
+                enumCollectionValueWasNotNullAtleastOnce |= testClass.REnumCollection.Any(e => e != null);
+                enumerableShortValueWasNotNullAtleastOnce |= testClass.Shorts.Any(s => s != null);
+                intCollectionValueWasNotNullAtleastOnce |= testClass.RCollection.Any(i => i != null);
+                boolCollectionValueWasNotNullAtleastOnce |= testClass.RCollection2.Any(b => b != null);
+                doubleListValueWasNotNullAtleastOnce |= testClass.RList.Any(d => d != null);
+                enumListValueWasNotNullAtleastOnce |= testClass.REnumList.Any(e => e != null);
+            }
+
+            enumListValueWasNotNullAtleastOnce.ShouldBeTrue();
+            enumCollectionValueWasNotNullAtleastOnce.ShouldBeTrue();
+            enumerableShortValueWasNotNullAtleastOnce.ShouldBeTrue();
+            intCollectionValueWasNotNullAtleastOnce.ShouldBeTrue();
+            boolCollectionValueWasNotNullAtleastOnce.ShouldBeTrue();
+            doubleListValueWasNotNullAtleastOnce.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void NullableCollectionsWillSometimesBePopulatedWithNullWhenAllowingNulls()
+        {
+            var intCollectionValueWasNullAtleastOnce = false;
+            var boolCollectionValueWasNullAtleastOnce = false;
+            var doubleListValueWasNullAtleastOnce = false;
+            var enumListValueWasNullAtleastOnce = false;
+            var enumCollectionValueWasNullAtleastOnce = false;
+            var enumerableShortValueWasNullAtleastOnce = false;
+
+            var settings = new RandomValueSettings { IncludeNullAsPossibleValueForNullables = true };
+
+            for (int n = 0; n < 100; n++)
+            {
+                var testClass = RandomValue.Object<NullableTestObject>(settings);
+
+                intCollectionValueWasNullAtleastOnce |= testClass.RCollection.Any(i => i == null);
+                boolCollectionValueWasNullAtleastOnce |= testClass.RCollection2.Any(b => b == null);
+                doubleListValueWasNullAtleastOnce |= testClass.RList.Any(d => d == null);
+                enumCollectionValueWasNullAtleastOnce |= testClass.REnumCollection.Any(e => e == null);
+                enumerableShortValueWasNullAtleastOnce |= testClass.Shorts.Any(s => s == null);
+                enumListValueWasNullAtleastOnce |= testClass.REnumList.Any(e => e == null);
+
+            }
+
+            enumListValueWasNullAtleastOnce.ShouldBeTrue();
+            enumCollectionValueWasNullAtleastOnce.ShouldBeTrue();
+            enumerableShortValueWasNullAtleastOnce.ShouldBeTrue();
+            boolCollectionValueWasNullAtleastOnce.ShouldBeTrue();
+            intCollectionValueWasNullAtleastOnce.ShouldBeTrue();
+            doubleListValueWasNullAtleastOnce.ShouldBeTrue();
         }
     }
 }

@@ -250,14 +250,20 @@ namespace RandomTestValues
             return System.Guid.NewGuid();
         }
         
-        internal static T Object<T>(Func<T,T> functionToActOnRandom) where T : new()
+        /// <summary>
+        /// Use for getting a random object. You can configure the generator by passing in a new RandomValueSettings object.
+        /// </summary>
+        /// <returns>A random Object T</returns>
+        public static T Object<T>(int recursiveDepth = 0) where T : new()
         {
-            var randomObject = Object<T>();
-
-            return functionToActOnRandom.Invoke(randomObject);
+            return Object<T>(new RandomValueSettings { RecursiveDepth = recursiveDepth });
         }
 
-        public static T Object<T>(int recursiveDepth = 0) where T : new()
+        /// <summary>
+        /// Use for getting a random object. You can configure the generator by passing in a new RandomValueSettings object.
+        /// </summary>
+        /// <returns>A random Object T</returns>
+        public static T Object<T>(RandomValueSettings settings) where T : new()
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
 
@@ -270,13 +276,15 @@ namespace RandomTestValues
                     // Property doesn't have a public setter so let's ignore it
                     continue;
                 }
-                if (recursiveDepth <= 0 && PropertyTypeIsRecursive<T>(prop))
+                if (settings.RecursiveDepth <= 0 && PropertyTypeIsRecursive<T>(prop))
                 {
                     // Prevent infinite loop when called recursively
                     continue;
                 }
 
-                var method = GetMethodCallAssociatedWithType(prop.PropertyType, recursiveDepth - 1);
+                var newSettings = new RandomValueSettings { RecursiveDepth = settings.RecursiveDepth - 1, IncludeNullAsPossibleValueForNullables = settings.IncludeNullAsPossibleValueForNullables, LengthOfCollection = settings.LengthOfCollection };
+
+                var method = GetMethodCallAssociatedWithType(prop.PropertyType, newSettings);
 
                 prop.SetValue(genericObject, method, null);
             }
@@ -295,29 +303,52 @@ namespace RandomTestValues
 
         public static T[] Array<T>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            return Collection<T>(optionalLength, recursiveDepth).ToArray();
+            return Array<T>(new RandomValueSettings (optionalLength) { RecursiveDepth = recursiveDepth});
+        }
+
+        public static T[] Array<T>(RandomValueSettings settings)
+        {
+            return Collection<T>(settings).ToArray(); ;
         }
 
         public static List<T> List<T>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            return ICollection<T>(optionalLength, recursiveDepth).ToList();
+            return List<T>(new RandomValueSettings(optionalLength) { RecursiveDepth = recursiveDepth });
+        }
+
+        public static List<T> List<T>(RandomValueSettings settings)
+        {
+            return ICollection<T>(settings).ToList();
         }
 
         public static IList<T> IList<T>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            return ICollection<T>(optionalLength, recursiveDepth).ToList();
+            return IList<T>(new RandomValueSettings(optionalLength) { RecursiveDepth = recursiveDepth });
+        }
+
+        public static IList<T> IList<T>(RandomValueSettings settings)
+        {
+            return ICollection<T>(settings).ToList();
         }
 
         public static Collection<T> Collection<T>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            return (Collection<T>)ICollection<T>(optionalLength, recursiveDepth);
+            return Collection<T>(new RandomValueSettings(optionalLength) { RecursiveDepth = recursiveDepth });
+        }
+
+        public static Collection<T> Collection<T>(RandomValueSettings settings)
+        {
+            return (Collection<T>)ICollection<T>(settings);
         }
 
         public static ICollection<T> ICollection<T>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
+            return ICollection<T>(new RandomValueSettings(optionalLength) { RecursiveDepth = recursiveDepth });
+        }
 
-            var enumerable = LazyIEnumerable<T>(recursiveDepth).Take(numberOfItems);
+        public static ICollection<T> ICollection<T>(RandomValueSettings settings)
+        {
+            var enumerable = LazyIEnumerable<T>(settings).Take(settings.LengthOfCollection);
 
             var randomList = new Collection<T>(enumerable.ToList());
 
@@ -326,12 +357,20 @@ namespace RandomTestValues
 
         public static IEnumerable<T> IEnumerable<T>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
+            return IEnumerable<T>(new RandomValueSettings(optionalLength) { RecursiveDepth = recursiveDepth });
+        }
 
-            return LazyIEnumerable<T>(recursiveDepth).Take(numberOfItems);
+        public static IEnumerable<T> IEnumerable<T>(RandomValueSettings settings)
+        {
+            return LazyIEnumerable<T>(settings).Take(settings.LengthOfCollection);
         }
 
         public static IEnumerable<T> LazyIEnumerable<T>(int recursiveDepth = 0)
+        {
+            return LazyIEnumerable<T>(new RandomValueSettings { RecursiveDepth = recursiveDepth });
+        }
+
+        public static IEnumerable<T> LazyIEnumerable<T>(RandomValueSettings settings)
         {
             var type = typeof(T);
 
@@ -339,7 +378,7 @@ namespace RandomTestValues
 
             while (supportType != SupportType.NotSupported)
             {
-                var method = GetMethodCallAssociatedWithType(type, recursiveDepth);
+                var method = GetMethodCallAssociatedWithType(type, settings);
 
                 yield return (T)method;
             }
@@ -347,23 +386,33 @@ namespace RandomTestValues
 
         public static Dictionary<TKey, TValue> Dictionary<TKey,TValue>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            return (Dictionary<TKey, TValue>)IDictionary<TKey, TValue>(optionalLength, recursiveDepth);
+            return Dictionary<TKey, TValue>(new RandomValueSettings (optionalLength) { RecursiveDepth = recursiveDepth });
+        }
+
+        public static Dictionary<TKey, TValue> Dictionary<TKey, TValue>(RandomValueSettings settings)
+        {
+            return (Dictionary<TKey, TValue>)IDictionary<TKey, TValue>(settings);
         }
 
         public static IDictionary<TKey, TValue> IDictionary<TKey, TValue>(int? optionalLength = null, int recursiveDepth = 0)
         {
-            var length = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
+            return IDictionary<TKey, TValue>(new RandomValueSettings(optionalLength) { RecursiveDepth = recursiveDepth });
+        }
+
+        public static IDictionary<TKey, TValue> IDictionary<TKey, TValue>(RandomValueSettings settings)
+        {
+            var length = settings.LengthOfCollection;
 
             var keys = LazyIEnumerable<TKey>().Distinct().Take(length);
 
-            var values = ICollection<TValue>(length, recursiveDepth);
+            var values = ICollection<TValue>(settings);
 
             var keyValuePairs = keys.Zip(values, (key, value) => new KeyValuePair<TKey, TValue>(key, value));
 
             return keyValuePairs.ToDictionary(key => key.Key, value => value.Value);
         }
 
-        private static object GetMethodCallAssociatedWithType(Type propertyType, int recursiveDepth)
+        private static object GetMethodCallAssociatedWithType(Type propertyType, RandomValueSettings settings)
         {
             var supportType = GetSupportType(propertyType);
 
@@ -376,21 +425,26 @@ namespace RandomTestValues
                 case SupportType.Collection:
                 {
                     var collectionType = GetSupportedCollectionType(propertyType);
-                    return GetListMethodOfCollections(propertyType, collectionType, recursiveDepth);
+                    return GetListMethodOfCollections(propertyType, collectionType.First(), settings);
                 }
                 case SupportType.Nullable:
-                    return NullableMethodCall(propertyType, Bool(), recursiveDepth);
+                    return NullableMethodCall(propertyType, settings);
                 case SupportType.UserDefined:
-                    return ObjectMethodCall(propertyType, recursiveDepth);
+                    return ObjectMethodCall(propertyType, settings);
                 default:
                     return null;
             }
         }
 
-        private static object NullableMethodCall(Type propertyType, bool makeNull, int recursiveDepth)
+        private static object NullableMethodCall(Type propertyType, RandomValueSettings settings)
         {
+            if(settings.IncludeNullAsPossibleValueForNullables && Bool())
+            {
+                return null;
+            }
+
             var baseType = Nullable.GetUnderlyingType(propertyType);
-            return GetMethodCallAssociatedWithType(baseType, recursiveDepth);
+            return GetMethodCallAssociatedWithType(baseType, settings);
         }
 
         private static bool IsNullableType(Type propertyType)
@@ -403,7 +457,7 @@ namespace RandomTestValues
             return optionalLength ?? _Random.Next(1, 10);
         }
 
-        private static object GetListMethodOfCollections(Type propertyType, Type genericType, int recursiveDepth)
+        private static object GetListMethodOfCollections(Type propertyType, Type genericType, RandomValueSettings settings)
         {
             var typeOfList = genericType;
 
@@ -413,35 +467,35 @@ namespace RandomTestValues
 
             if (propertyType.IsArray)
             {
-                listMethod = ArrayMethodCall(propertyType.GetElementType(), recursiveDepth);
+                listMethod = ArrayMethodCall(propertyType.GetElementType(), settings);
             }
             else if (type.GetTypeInfo().IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
             {
-                listMethod = ListMethodCall(typeOfList, recursiveDepth);
+                listMethod = ListMethodCall(typeOfList, settings);
             }
             else if (type.GetGenericTypeDefinition() == typeof(IList<>))
             {
-                listMethod = IListMethodCall(typeOfList, recursiveDepth);
+                listMethod = IListMethodCall(typeOfList, settings);
             }
             else if (type.GetTypeInfo().IsGenericType && (type.GetGenericTypeDefinition() == typeof(Collection<>)))
             {
-                listMethod = CollectionMethodCall(typeOfList, recursiveDepth);
+                listMethod = CollectionMethodCall(typeOfList, settings);
             }
             else if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
-                listMethod = ICollectionMethodCall(typeOfList, recursiveDepth);
+                listMethod = ICollectionMethodCall(typeOfList, settings);
             }
             else if (type.GetTypeInfo().IsGenericType && (type.GetGenericTypeDefinition() == typeof(Dictionary<,>)))
             {
-                listMethod = DictionaryMethodCall(type.GenericTypeArguments, recursiveDepth);
+                listMethod = DictionaryMethodCall(type.GenericTypeArguments, settings);
             }
             else if (type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
-                listMethod = IDictionaryMethodCall(type.GenericTypeArguments, recursiveDepth);
+                listMethod = IDictionaryMethodCall(type.GenericTypeArguments, settings);
             }
             else if (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
-                listMethod = IEnumerableMethodCall(typeOfList, recursiveDepth);
+                listMethod = IEnumerableMethodCall(typeOfList, settings);
             }
 
             return listMethod;
@@ -461,12 +515,12 @@ namespace RandomTestValues
                        ));
         }
 
-        private static object ObjectMethodCall(Type type, int recursiveDepth)
+        private static object ObjectMethodCall(Type type, RandomValueSettings settings)
         {
             return typeof(RandomValue).GetRuntimeMethods()
-                .First(x => x.Name == "Object" && x.GetParameters()?[0]?.ParameterType == typeof(int))
+                .First(x => x.Name == "Object" && x.GetParameters()?[0]?.ParameterType == typeof(RandomValueSettings))
                 .MakeGenericMethod(type)
-                .Invoke(null, new object[] { recursiveDepth });
+                .Invoke(null, new object[] { settings });
         }
 
         private static object EnumMethodCall(Type type)
@@ -476,68 +530,75 @@ namespace RandomTestValues
                 .Invoke(null, new object[] { });
         }
 
-        private static object IEnumerableMethodCall(Type type, int recursiveDepth)
+        private static object IEnumerableMethodCall(Type type, RandomValueSettings settings)
         {
             return GetMethod("IEnumerable")
                 .MakeGenericMethod(type)
-                .Invoke(null, new object[] { null, recursiveDepth });
+                .Invoke(null, new object[] { settings });
         }
 
-        private static object ArrayMethodCall(Type typeOfList, int recursiveDepth)
+        private static object ArrayMethodCall(Type typeOfList, RandomValueSettings settings)
         {
-            return InvokeCollectionMethod("Array", typeOfList, recursiveDepth);
+            return InvokeCollectionMethod("Array", typeOfList, settings);
         }
 
-        private static object ListMethodCall(Type typeOfList, int recursiveDepth)
+        private static object ListMethodCall(Type typeOfList, RandomValueSettings settings)
         {
-            return InvokeCollectionMethod("List", typeOfList, recursiveDepth);
+            return InvokeCollectionMethod("List", typeOfList, settings);
         }
 
-        private static object IListMethodCall(Type typeOfList, int recursiveDepth)
+        private static object IListMethodCall(Type typeOfList, RandomValueSettings settings)
         {
-            return InvokeCollectionMethod("IList", typeOfList, recursiveDepth);
+            return InvokeCollectionMethod("IList", typeOfList, settings);
         }
 
-        private static object CollectionMethodCall(Type typeOfList, int recursiveDepth)
+        private static object CollectionMethodCall(Type typeOfList, RandomValueSettings settings)
+        { 
+            return InvokeCollectionMethod("Collection", typeOfList, settings);
+        }
+
+        private static object ICollectionMethodCall(Type typeOfList, RandomValueSettings settings)
         {
-            return InvokeCollectionMethod("Collection", typeOfList, recursiveDepth);
+            return InvokeCollectionMethod("ICollection", typeOfList, settings);
         }
 
-        private static object ICollectionMethodCall(Type typeOfList, int recursiveDepth)
-        {
-            return InvokeCollectionMethod("ICollection", typeOfList, recursiveDepth);
-        }
-
-        private static object DictionaryMethodCall(Type[] genericTypeArguments, int recursiveDepth)
+        private static object DictionaryMethodCall(Type[] genericTypeArguments, RandomValueSettings settings)
         {
             var method = GetMethod("Dictionary");
 
             return method
                  .MakeGenericMethod(genericTypeArguments[0], genericTypeArguments[1])
-                 .Invoke(null, new object[] { null, recursiveDepth });
+                 .Invoke(null, new object[] { settings });
         }
 
-        private static object IDictionaryMethodCall(Type[] genericTypeArguments, int recursiveDepth)
+        private static object IDictionaryMethodCall(Type[] genericTypeArguments, RandomValueSettings settings)
         {
             var method = GetMethod("IDictionary");
 
             return method
                  .MakeGenericMethod(genericTypeArguments[0], genericTypeArguments[1])
-                 .Invoke(null, new object[] { null, recursiveDepth });
+                 .Invoke(null, new object[] { settings });
         }
 
-        private static object InvokeCollectionMethod(string nameOfMethod, Type type, int recursiveDepth)
+        private static object InvokeCollectionMethod(string nameOfMethod, Type type, RandomValueSettings settings)
         {
             var method = GetMethod(nameOfMethod);
 
             return method
                 .MakeGenericMethod(type)
-                .Invoke(null, new object[] { null, recursiveDepth });
+                .Invoke(null, new object[] { settings });
         }
 
         private static MethodInfo GetMethod(string nameOfMethod)
         {
-            return typeof(RandomValue).GetRuntimeMethods().First(x => x.Name == nameOfMethod);
+            var possibleMethods = typeof(RandomValue).GetRuntimeMethods().Where(x => x.Name == nameOfMethod);
+
+            if(possibleMethods.Count() > 1)
+            {
+                return possibleMethods.First(x => x.GetParameters().Length == 1);
+            }
+
+            return possibleMethods.First();
         }
 
         private static SupportType GetSupportType(Type type)
@@ -566,12 +627,19 @@ namespace RandomTestValues
             return SupportType.NotSupported;
         }
 
-        private static Type GetSupportedCollectionType(Type type)
+        private static Type[] GetSupportedCollectionType(Type type)
         {
-            var collectionType = type.IsArray
-                        ? type.GetElementType()
-                        : type.GetGenericArguments()[0];
-            return collectionType;
+            if (type.IsArray)
+            {
+                return new Type[]
+                {
+                    type.GetElementType()
+                };
+            }
+            else
+            {
+                return type.GetGenericArguments();
+            }
         }
 
         private static Type[] GetGenericArguments(this Type type)
@@ -586,7 +654,7 @@ namespace RandomTestValues
             if (IsSupportedCollection(property.PropertyType))
             {
                 var collectionType = GetSupportedCollectionType(property.PropertyType);
-                return collectionType == typeof(T);
+                return collectionType.Contains(typeof(T));
             }
             if (IsNullableType(property.PropertyType))
             {
