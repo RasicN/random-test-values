@@ -107,5 +107,9 @@ namespace RandomTestValues.Tests.ShouldExtensions
             value.Should().BeGreaterThan(min);
         }
 
+        public static void ShouldBeInRange(this double value, double min, double max)
+        {
+            value.Should().BeInRange(min, max);
+        }
     }
 }

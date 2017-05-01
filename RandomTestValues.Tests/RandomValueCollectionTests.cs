@@ -9,7 +9,7 @@ using System.Linq;
 namespace RandomTestValues.Tests
 {
     [TestClass]
-    public class RandomValueCollection
+    public class RandomValueCollectionTests
     {
         [TestMethod]
         public void RandomSbyteShouldReturnSomethingDifferentMostOfTheTimeItIsCalled()
@@ -189,12 +189,12 @@ namespace RandomTestValues.Tests
         }
 
         [TestMethod]
-        public void RandomCollectionOfTypeShouldReturnARandomListOfTheSpecifiedSize()
+        public void RandomCollectionOfTypeShouldReturnARandomListWithinTheSpecifiedSize()
         {
-            var enumCollection = RandomValue.List<TestEnum>(25);
+            var listOfEnums = RandomValue.List<TestEnum>(25);
 
-            enumCollection.Count.ShouldEqual(25);
-            enumCollection.First().ShouldBeType<TestEnum>();
+            listOfEnums.Count.ShouldEqual(25);
+            listOfEnums.First().ShouldBeType<TestEnum>();
         }
 
         [TestMethod]
@@ -315,6 +315,23 @@ namespace RandomTestValues.Tests
             var length = 127;
 
             var result = RandomValue.Dictionary<sbyte, Guid>(length);
+
+            for (int i = 0; i < length; i++)
+            {
+                result.ContainsKey((sbyte)i).ShouldBeTrue();
+            }
+
+            result.Keys.First().ShouldBeType<sbyte>();
+            result.Values.First().ShouldBeType<Guid>();
+        }
+
+        [TestMethod]
+        public void AllItemsInTheKeysShouldBeUniqueForADictionaryNewSettingsObject()
+        {
+            //There should be keys from 1 - 127.
+            var length = 127;
+
+            var result = RandomValue.Dictionary<sbyte, Guid>(new RandomValueSettings { LengthOfCollection = length });
 
             for (int i = 0; i < length; i++)
             {
