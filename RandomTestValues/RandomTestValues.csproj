@@ -6,7 +6,7 @@
     <AssemblyName>RandomTestValues</AssemblyName>
     <PackageId>RandomTestValues</PackageId>
     <PackageTags>Unit-Testing;TDD</PackageTags>
-    <PackageReleaseNotes>Converted RandomTestValues to a netstandard1.0 dll.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added a new idea of RandomFormats that can be expanded upon to give random fomatted data.  First pass was a weak attempt at phone number and email address.</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/RasicN/random-test-values</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</PackageLicenseUrl>
@@ -14,9 +14,14 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>2.0.2</Version>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>2.0.3</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>This project is to speed up and clean up unit testing and test driven development by returning random values.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Formats\RandomFormat.Email.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="RandomTestValues\bin\Release\netstandard1.0\RandomTestValues.dll">
