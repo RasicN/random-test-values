@@ -42,6 +42,7 @@ namespace RandomTestValues.Tests
             testClass.RTestObject2Array.ShouldNotBeEmpty();
             testClass.TimeSpan.ShouldNotBeDefault();
             testClass.DateTimeOffset.ShouldNotEqual(new DateTimeOffset());
+            testClass.RUri.ShouldNotBeDefault();
 
             var isEnum = ((int)testClass.REnum == (int)TestEnum.More
                 || (int)testClass.REnum == (int)TestEnum.Most

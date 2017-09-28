@@ -39,5 +39,6 @@ namespace RandomTestValues.Tests
         public Dictionary<DateTime, int> RDictionary { get; set; }
 
         public DateTimeOffset DateTimeOffset { get; set; }
+        public Uri RUri { get; set; }
     }
 }

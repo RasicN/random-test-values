@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Linq;
+using RandomTestValues.Formats;
 
 namespace RandomTestValues
 {
@@ -28,7 +29,8 @@ namespace RandomTestValues
                 {typeof(Guid), type => Guid()},
                 {typeof(DateTime), type => DateTime()},
                 {typeof(TimeSpan), type => TimeSpan() },
-                {typeof(DateTimeOffset), type => DateTimeOffset() }
+                {typeof(DateTimeOffset), type => DateTimeOffset() },
+                {typeof(Uri), type => Uri() }
             };
 
         private static readonly Random _Random = new Random();
@@ -249,7 +251,12 @@ namespace RandomTestValues
         {
             return System.Guid.NewGuid();
         }
-        
+
+        public static Uri Uri()
+        {
+            return new Uri(RandomFormat.UriString());
+        }
+
         /// <summary>
         /// Use for getting a random object. You can configure the generator by passing in a new RandomValueSettings object.
         /// </summary>
