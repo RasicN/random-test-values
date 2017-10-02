@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace RandomTestValues.Tests
 {
@@ -364,6 +365,16 @@ namespace RandomTestValues.Tests
             boolCollectionValueWasNullAtleastOnce.ShouldBeTrue();
             intCollectionValueWasNullAtleastOnce.ShouldBeTrue();
             doubleListValueWasNullAtleastOnce.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void IgnoreExtensionDataObject()
+        {
+            // Act
+            var result = RandomValue.Object<TestObjectWithExtensionDataObject>();
+         
+            // Assert
+            result.String1.ShouldNotBeDefault();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 using RandomTestValues.Formats;
@@ -32,7 +33,7 @@ namespace RandomTestValues
                 {typeof(DateTimeOffset), type => DateTimeOffset() },
                 {typeof(Uri), type => Uri() }
             };
-
+        
         private static readonly Random _Random = new Random();
 
         /// <summary>
@@ -283,6 +284,7 @@ namespace RandomTestValues
                     // Property doesn't have a public setter so let's ignore it
                     continue;
                 }
+
                 if (settings.RecursiveDepth <= 0 && PropertyTypeIsRecursive<T>(prop))
                 {
                     // Prevent infinite loop when called recursively
@@ -291,14 +293,21 @@ namespace RandomTestValues
 
                 var newSettings = new RandomValueSettings { RecursiveDepth = settings.RecursiveDepth - 1, IncludeNullAsPossibleValueForNullables = settings.IncludeNullAsPossibleValueForNullables, LengthOfCollection = settings.LengthOfCollection };
 
-                var method = GetMethodCallAssociatedWithType(prop.PropertyType, newSettings);
+                try
+                {
+                    var method = GetMethodCallAssociatedWithType(prop.PropertyType, newSettings);
 
-                prop.SetValue(genericObject, method, null);
+                    prop.SetValue(genericObject, method, null);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
 
             return genericObject;
         }
-
+        
         public static T Enum<T>()
         {
             var fields = typeof(T).GetRuntimeFields().Where(x => x.IsPublic && x.IsStatic).ToArray();
