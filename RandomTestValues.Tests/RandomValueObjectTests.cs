@@ -376,5 +376,15 @@ namespace RandomTestValues.Tests
             // Assert
             result.String1.ShouldNotBeDefault();
         }
+
+        [TestMethod]
+        public void CircularObjectsObeyRecursionLimit()
+        {
+            var result = RandomValue.Object<CircularTypes1>(3);
+
+            // Assert
+            result.Circular.Circular.Circular.ShouldEqual(null);
+        }
+
     }
 }
