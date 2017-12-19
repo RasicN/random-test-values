@@ -533,6 +533,11 @@ namespace RandomTestValues
 
         private static object ObjectMethodCall(Type type, RandomValueSettings settings)
         {
+            if (settings.RecursiveDepth <= 0)
+            {
+                return null;
+            }
+
             return typeof(RandomValue).GetRuntimeMethods()
                 .First(x => x.Name == "Object" && x.GetParameters()?[0]?.ParameterType == typeof(RandomValueSettings))
                 .MakeGenericMethod(type)
