@@ -6,7 +6,7 @@
     <AssemblyName>RandomTestValues</AssemblyName>
     <PackageId>RandomTestValues</PackageId>
     <PackageTags>Unit-Testing;TDD</PackageTags>
-    <PackageReleaseNotes>Converted RandomTestValues to a netstandard1.0 dll.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed an issue where WCF objects where throwing exceptions.  Now when an exception is thrown on Random.Object&lt;T&gt;() for a property it will just skip that property.</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/RasicN/random-test-values</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</PackageLicenseUrl>
@@ -14,9 +14,14 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>2.0.1</Version>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>2.0.5</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>This project is to speed up and clean up unit testing and test driven development by returning random values.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Formats\RandomFormat.Email.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="RandomTestValues\bin\Release\netstandard1.0\RandomTestValues.dll">

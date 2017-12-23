@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace RandomTestValues.Tests
 {
@@ -42,6 +43,7 @@ namespace RandomTestValues.Tests
             testClass.RTestObject2Array.ShouldNotBeEmpty();
             testClass.TimeSpan.ShouldNotBeDefault();
             testClass.DateTimeOffset.ShouldNotEqual(new DateTimeOffset());
+            testClass.RUri.ShouldNotBeDefault();
 
             var isEnum = ((int)testClass.REnum == (int)TestEnum.More
                 || (int)testClass.REnum == (int)TestEnum.Most
@@ -364,5 +366,25 @@ namespace RandomTestValues.Tests
             intCollectionValueWasNullAtleastOnce.ShouldBeTrue();
             doubleListValueWasNullAtleastOnce.ShouldBeTrue();
         }
+
+        [TestMethod]
+        public void IgnoreExtensionDataObject()
+        {
+            // Act
+            var result = RandomValue.Object<TestObjectWithExtensionDataObject>();
+         
+            // Assert
+            result.String1.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
+        public void CircularObjectsObeyRecursionLimit()
+        {
+            var result = RandomValue.Object<CircularTypes1>(3);
+
+            // Assert
+            result.Circular.Circular.Circular.ShouldEqual(null);
+        }
+
     }
 }

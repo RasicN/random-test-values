@@ -355,6 +355,15 @@ namespace RandomTestValues.Tests
  
             ratio.ShouldBeInRange(0.49, 0.51);
         }
+
+        [TestMethod]
+        public void RandomUriWillReturnANewUriObjectWithARandomEndpoint()
+        {
+            var uri1 = RandomValue.Uri();
+            var uri2 = RandomValue.Uri();
+
+            Assert.AreNotEqual(uri1, uri2);
+        }
     }
 }
 
