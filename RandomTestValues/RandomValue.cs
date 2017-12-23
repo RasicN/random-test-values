@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 using RandomTestValues.Formats;
@@ -285,7 +284,7 @@ namespace RandomTestValues
                     continue;
                 }
 
-                if (settings.RecursiveDepth <= 0 && PropertyTypeIsRecursive<T>(prop))
+                if (settings.RecursiveDepth <= 0 && PropertyTypeIsRecursiveOrCircular<T>(prop))
                 {
                     // Prevent infinite loop when called recursively
                     continue;
@@ -307,7 +306,7 @@ namespace RandomTestValues
 
             return genericObject;
         }
-        
+
         public static T Enum<T>()
         {
             var fields = typeof(T).GetRuntimeFields().Where(x => x.IsPublic && x.IsStatic).ToArray();
@@ -533,11 +532,6 @@ namespace RandomTestValues
 
         private static object ObjectMethodCall(Type type, RandomValueSettings settings)
         {
-            if (settings.RecursiveDepth <= 0)
-            {
-                return null;
-            }
-
             return typeof(RandomValue).GetRuntimeMethods()
                 .First(x => x.Name == "Object" && x.GetParameters()?[0]?.ParameterType == typeof(RandomValueSettings))
                 .MakeGenericMethod(type)
@@ -668,20 +662,31 @@ namespace RandomTestValues
             return type.GetTypeInfo().IsGenericTypeDefinition ? type.GetTypeInfo().GenericTypeParameters : type.GetTypeInfo().GenericTypeArguments;
         }
 
+        private static bool PropertyTypeIsRecursiveOrCircular<T>(PropertyInfo property) where T : new()
+        {
+            return PropertyTypeIsRecursive<T>(property); // || PropertyTypeIsCircular<T>(property);
+        }
+
+        
         private static bool PropertyTypeIsRecursive<T>(PropertyInfo property) where T : new()
         {
-            if (property.PropertyType == typeof(T))
-                return true;
-            if (IsSupportedCollection(property.PropertyType))
+            var propertyType = property.PropertyType;
+
+            if (propertyType == typeof(T))
             {
-                var collectionType = GetSupportedCollectionType(property.PropertyType);
+                return true;
+            }            
+            if (IsSupportedCollection(propertyType))
+            {
+                var collectionType = GetSupportedCollectionType(propertyType);
                 return collectionType.Contains(typeof(T));
             }
-            if (IsNullableType(property.PropertyType))
+            if (IsNullableType(propertyType))
             {
-                var underlyingType = Nullable.GetUnderlyingType(property.PropertyType);
+                var underlyingType = Nullable.GetUnderlyingType(propertyType);
                 return underlyingType == typeof(T);
             }
+
             return false;
         }
 
