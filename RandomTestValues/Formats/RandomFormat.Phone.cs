@@ -5,21 +5,25 @@ namespace RandomTestValues.Formats
 {
     public static partial class RandomFormat
     {
-        private static readonly int Areacode = RandomValue.Int(999, 100);
-        private static readonly int LocalCode = RandomValue.Int(999, 100);
-        private static readonly int LastFour = RandomValue.Int(9999, 1000);
         public static string PhoneNumber()
         {
-            return $"{Areacode}{LocalCode}{LastFour}";
+            var areaCode = RandomValue.Int(999, 200);
+            var localCode = RandomValue.Int(999, 100);
+            var lastFour = RandomValue.Int(9999, 1000);
+            return $"{areaCode}{localCode}{lastFour}";
         }
 
         public static string PhoneNumber(PhoneFormat format)
         {
+            var areaCode = RandomValue.Int(999, 200);
+            var localCode = RandomValue.Int(999, 100);
+            var lastFour = RandomValue.Int(9999, 1000);
+
             switch (format)
             {
                 case PhoneFormat.NANP:
                 {
-                    return $"{Areacode}-{LocalCode}-{LastFour}";
+                    return $"{areaCode}-{localCode}-{lastFour}";
                 }
                 default:
                     return PhoneNumber();

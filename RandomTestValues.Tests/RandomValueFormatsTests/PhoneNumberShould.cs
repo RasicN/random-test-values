@@ -8,6 +8,15 @@ namespace RandomTestValues.Tests.RandomValueFormatsTests
     public class PhoneNumberShould
     {
         [TestMethod]
+        public void ReturnRandomPhoneNumber()
+        {
+            var phone1 = RandomFormat.PhoneNumber();
+            var phone2 = RandomFormat.PhoneNumber();
+
+            Assert.AreNotEqual(phone1, phone2);
+        }
+
+        [TestMethod]
         public void BeALengthOf10WhenNoFormatPassedIn()
         {
             // Act
