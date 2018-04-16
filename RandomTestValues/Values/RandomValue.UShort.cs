@@ -8,7 +8,7 @@
         /// <returns>A random Unsigned Short</returns>
         public static ushort UShort(ushort maxPossibleValue = ushort.MaxValue)
         {
-            return (ushort)Int();
+            return (ushort)Int(maxPossibleValue);
         }
     }
 }
