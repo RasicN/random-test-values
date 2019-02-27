@@ -1,6 +1,8 @@
 #Random Test Values
 This project is to speed up and clean up unit testing by returning random values.
 
+`Install-Package RandomTestValues`
+
 Hopefully you can go from tests that look like this:
 ```csharp
 [TestMethod]
