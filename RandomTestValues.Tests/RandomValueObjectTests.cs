@@ -15,208 +15,256 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomObjectOfSupportedValuesWillBePopulated()
         {
-            var testClass = RandomValue.Object<TestObject>();
+            InstanceAssertions(RandomValue.Object<TestObject>());
+            InstanceAssertions((TestObject)RandomValue.Object(typeof(TestObject)));
 
-            testClass.RString.ShouldNotBeDefault();
-            testClass.RDecimal.ShouldNotBeDefault();
-            testClass.RDouble.ShouldNotBeDefault();
-            testClass.RInt.ShouldNotBeDefault();
-            testClass.RCollection.ShouldNotBeEmpty();
-            testClass.RCollection2.ShouldNotBeEmpty();
-            testClass.RList.ShouldNotBeEmpty();
-            testClass.RList2.ShouldNotBeEmpty();
-            testClass.TestObject2.ShouldNotBeDefault();
-            testClass.RTestObject2List.ShouldNotBeEmpty();
-            testClass.RDateTime.ShouldNotBeDefault();
-            testClass.RTestObject2Collection.ShouldNotBeEmpty();
-            testClass.RGuid.ShouldNotBeDefault();
-            testClass.REnumList.ShouldNotBeEmpty();
-            testClass.TestObject3.ShouldNotBeDefault();
-            testClass.RInt2.ShouldNotBeDefault();
-            testClass.RString2.ShouldNotBeDefault();
-            testClass.RDecimal2.ShouldNotBeDefault();
-            testClass.RDouble2.ShouldNotBeDefault();
-            testClass.REnumCollection.ShouldNotBeEmpty();
-            testClass.Shorts.ShouldNotBeEmpty();
-            testClass.Shorts.Count().ShouldBeInRange(0, 10);
-            testClass.Strings.ShouldNotBeEmpty();
-            testClass.RTestObject2Array.ShouldNotBeEmpty();
-            testClass.TimeSpan.ShouldNotBeDefault();
-            testClass.DateTimeOffset.ShouldNotEqual(new DateTimeOffset());
-            testClass.RUri.ShouldNotBeDefault();
+            void InstanceAssertions(TestObject testInstance)
+            {
+                testInstance.RString.ShouldNotBeDefault();
+                testInstance.RDecimal.ShouldNotBeDefault();
+                testInstance.RDouble.ShouldNotBeDefault();
+                testInstance.RInt.ShouldNotBeDefault();
+                testInstance.RCollection.ShouldNotBeEmpty();
+                testInstance.RCollection2.ShouldNotBeEmpty();
+                testInstance.RList.ShouldNotBeEmpty();
+                testInstance.RList2.ShouldNotBeEmpty();
+                testInstance.TestObject2.ShouldNotBeDefault();
+                testInstance.RTestObject2List.ShouldNotBeEmpty();
+                testInstance.RDateTime.ShouldNotBeDefault();
+                testInstance.RTestObject2Collection.ShouldNotBeEmpty();
+                testInstance.RGuid.ShouldNotBeDefault();
+                testInstance.REnumList.ShouldNotBeEmpty();
+                testInstance.TestObject3.ShouldNotBeDefault();
+                testInstance.RInt2.ShouldNotBeDefault();
+                testInstance.RString2.ShouldNotBeDefault();
+                testInstance.RDecimal2.ShouldNotBeDefault();
+                testInstance.RDouble2.ShouldNotBeDefault();
+                testInstance.REnumCollection.ShouldNotBeEmpty();
+                testInstance.Shorts.ShouldNotBeEmpty();
+                testInstance.Shorts.Count().ShouldBeInRange(0, 10);
+                testInstance.Strings.ShouldNotBeEmpty();
+                testInstance.RTestObject2Array.ShouldNotBeEmpty();
+                testInstance.TimeSpan.ShouldNotBeDefault();
+                testInstance.DateTimeOffset.ShouldNotEqual(new DateTimeOffset());
+                testInstance.RUri.ShouldNotBeDefault();
 
-            var isEnum = ((int)testClass.REnum == (int)TestEnum.More
-                || (int)testClass.REnum == (int)TestEnum.Most
-                || (int)testClass.REnum == (int)TestEnum.Mostest
-                || (int)testClass.REnum == (int)TestEnum.Mostestest);
+                var isEnum = ((int) testInstance.REnum == (int) TestEnum.More
+                              || (int) testInstance.REnum == (int) TestEnum.Most
+                              || (int) testInstance.REnum == (int) TestEnum.Mostest
+                              || (int) testInstance.REnum == (int) TestEnum.Mostestest);
 
-            isEnum.ShouldBeTrue();
+                isEnum.ShouldBeTrue();
+            }
         }
 
         [TestMethod]
         public void NullableValuesWillBePopulatedWithObject()
         {
-            var testClass = RandomValue.Object<NullableTestObject>();
+            InstanceAssertions(RandomValue.Object<NullableTestObject>());
+            InstanceAssertions((NullableTestObject)RandomValue.Object(typeof(NullableTestObject)));
 
-            testClass.RDecimal.ShouldNotBeDefault();
-            testClass.RDouble.ShouldNotBeDefault();
-            testClass.RInt.ShouldNotBeDefault();
-            testClass.RCollection.ShouldNotBeEmpty();
-            testClass.RCollection2.ShouldNotBeEmpty();
-            testClass.RList.ShouldNotBeEmpty();
-            testClass.RDateTime.ShouldNotBeDefault();
-            testClass.RGuid.ShouldNotBeDefault();
-            testClass.REnumList.ShouldNotBeEmpty();
-            testClass.RInt2.ShouldNotBeDefault();
-            testClass.RDecimal2.ShouldNotBeDefault();
-            testClass.RDouble2.ShouldNotBeDefault();
-            testClass.REnumCollection.ShouldNotBeEmpty();
-            testClass.Shorts.ShouldNotBeEmpty();
-            testClass.Shorts.Count().ShouldBeInRange(0, 10);
+            void InstanceAssertions(NullableTestObject testInstance)
+            {
+                testInstance.RDecimal.ShouldNotBeDefault();
+                testInstance.RDouble.ShouldNotBeDefault();
+                testInstance.RInt.ShouldNotBeDefault();
+                testInstance.RCollection.ShouldNotBeEmpty();
+                testInstance.RCollection2.ShouldNotBeEmpty();
+                testInstance.RList.ShouldNotBeEmpty();
+                testInstance.RDateTime.ShouldNotBeDefault();
+                testInstance.RGuid.ShouldNotBeDefault();
+                testInstance.REnumList.ShouldNotBeEmpty();
+                testInstance.RInt2.ShouldNotBeDefault();
+                testInstance.RDecimal2.ShouldNotBeDefault();
+                testInstance.RDouble2.ShouldNotBeDefault();
+                testInstance.REnumCollection.ShouldNotBeEmpty();
+                testInstance.Shorts.ShouldNotBeEmpty();
+                testInstance.Shorts.Count().ShouldBeInRange(0, 10);
 
-            var isEnum = ((int)testClass.REnum == (int)TestEnum.More
-                || (int)testClass.REnum == (int)TestEnum.Most
-                || (int)testClass.REnum == (int)TestEnum.Mostest
-                || (int)testClass.REnum == (int)TestEnum.Mostestest);
+                var isEnum = ((int) testInstance.REnum == (int) TestEnum.More
+                              || (int) testInstance.REnum == (int) TestEnum.Most
+                              || (int) testInstance.REnum == (int) TestEnum.Mostest
+                              || (int) testInstance.REnum == (int) TestEnum.Mostestest);
 
-            isEnum.ShouldBeTrue();
+                isEnum.ShouldBeTrue();
+            }
         }
 
         [TestMethod]
         public void RandomObjectWillSupportACrazyCollectionOfCollections()
         {
-            var testClass = RandomValue.Object<TestObject>();
+            InstanceAssertions(RandomValue.Object<TestObject>());
+            InstanceAssertions((TestObject)RandomValue.Object(typeof(TestObject)));
 
-            var enumeration = testClass.CrazyBools;
+            void InstanceAssertions(TestObject testInstance)
+            {
+                var enumeration = testInstance.CrazyBools.ToArray();
 
-            enumeration.Count().ShouldBeInRange(1, 10);
-            enumeration.First().ShouldBeType<List<Collection<bool>>>();
+                enumeration.Length.ShouldBeInRange(1, 10);
+                enumeration.First().ShouldBeType<List<Collection<bool>>>();
+            }
         }
 
         [TestMethod]
         public void RandomObjectOfSupportedValuesWillReturnNullForUnDeterminable()
         {
-            var testClass = RandomValue.Object<TestObject>();
+            InstanceAssertions(RandomValue.Object<TestObject>());
+            InstanceAssertions((TestObject)RandomValue.Object(typeof(TestObject)));
 
-            testClass.TestObject2.RObject.ShouldBeType<object>();
+            void InstanceAssertions(TestObject testInstance)
+            {
+                testInstance.TestObject2.RObject.ShouldBeType<object>();
+            }
         }
 
         [TestMethod]
         public void RandomObjectOfSupportedValuesWillReturnGoodValuesInObjectsThatAreRecursivelyFound()
         {
-            var testClass = RandomValue.Object<TestObject>();
+            InstanceAssertions(RandomValue.Object<TestObject>());
+            InstanceAssertions((TestObject)RandomValue.Object(typeof(TestObject)));
 
-            testClass.TestObject2.RObject.ShouldBeType<object>();
-            testClass.TestObject2.RInt2.ShouldNotBeDefault();
-            testClass.TestObject2.RString2.ShouldNotBeDefault();
-            testClass.TestObject2.RDouble2.ShouldNotBeDefault();
-            testClass.TestObject2.RDecimal2.ShouldNotBeDefault();
+            void InstanceAssertions(TestObject testInstance)
+            {
+                testInstance.TestObject2.RObject.ShouldBeType<object>();
+                testInstance.TestObject2.RInt2.ShouldNotBeDefault();
+                testInstance.TestObject2.RString2.ShouldNotBeDefault();
+                testInstance.TestObject2.RDouble2.ShouldNotBeDefault();
+                testInstance.TestObject2.RDecimal2.ShouldNotBeDefault();
+            }
         }
 
         [TestMethod]
         public void TheDictionaryShouldBeSetUpCorrectlyOnTheTestObject()
         {
-            var result = RandomValue.Object<TestObject>();
+            InstanceAssertions(RandomValue.Object<TestObject>());
+            InstanceAssertions((TestObject)RandomValue.Object(typeof(TestObject)));
 
-            result.RDictionary.Count().ShouldBeGreaterThanOrEqualTo(1);
-            result.RDictionary.Keys.First().ShouldBeType<DateTime>();
-            result.RDictionary.Values.First().ShouldBeType<int>();
+            void InstanceAssertions(TestObject testInstance)
+            {
+                testInstance.RDictionary.Count.ShouldBeGreaterThanOrEqualTo(1);
+                testInstance.RDictionary.Keys.First().ShouldBeType<DateTime>();
+                testInstance.RDictionary.Values.First().ShouldBeType<int>();
+            }
         }
 
         [TestMethod]
         public void TheIDictionaryShouldBeSetUpCorrectlyOnTheTestObject()
         {
-            var result = RandomValue.Object<TestObject>();
+            InstanceAssertions(RandomValue.Object<TestObject>());
+            InstanceAssertions((TestObject) RandomValue.Object(typeof(TestObject)));
 
-            result.RIDictionary.Count().ShouldBeGreaterThanOrEqualTo(1);
-            result.RIDictionary.Keys.First().ShouldBeType<TimeSpan>();
-            result.RIDictionary.Values.First().ShouldBeType<Collection<bool>>();
+            void InstanceAssertions(TestObject testInstance)
+            {
+                testInstance.RIDictionary.Count.ShouldBeGreaterThanOrEqualTo(1);
+                testInstance.RIDictionary.Keys.First().ShouldBeType<TimeSpan>();
+                testInstance.RIDictionary.Values.First().ShouldBeType<Collection<bool>>();
+            }
         }
 
         [TestMethod]
         public void ThereShouldntBeAOutOfMemoryExceptionWhenAnObjectIsRecursive()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveProperty>();
+            InstanceAssertions(RandomValue.Object<ObjectWithRecursiveProperty>());
+            InstanceAssertions((ObjectWithRecursiveProperty)RandomValue.Object(typeof(ObjectWithRecursiveProperty)));
 
-            result.RecursiveProperty.ShouldEqual(null);
-            result.RecursiveProperty2.ShouldEqual(null);
-            result.Int.ShouldNotBeDefault();
+            void InstanceAssertions(ObjectWithRecursiveProperty testInstance)
+            {
+                testInstance.RecursiveProperty.ShouldEqual(null);
+                testInstance.RecursiveProperty2.ShouldEqual(null);
+                testInstance.Int.ShouldNotBeDefault();
+            }
         }
 
         [TestMethod]
         public void RandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepth()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveProperty>(recursiveDepth: 2);
+            InstanceAssertions(RandomValue.Object<ObjectWithRecursiveProperty>(recursiveDepth: 2));
+            InstanceAssertions((ObjectWithRecursiveProperty)RandomValue.Object(typeof(ObjectWithRecursiveProperty), recursiveDepth: 2));
 
-            // 1 level depth
-            result.RecursiveProperty.ShouldNotBeDefault();
-            result.RecursiveProperty2.ShouldNotBeDefault();
+            void InstanceAssertions(ObjectWithRecursiveProperty testInstance)
+            {
+                // 1 level depth
+                testInstance.RecursiveProperty.ShouldNotBeDefault();
+                testInstance.RecursiveProperty2.ShouldNotBeDefault();
 
-            // 2 level depth
-            result.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
-            result.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
+                // 2 level depth
+                testInstance.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
+                testInstance.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
 
-            // 3 level depth (should now be null as recursiveDepth:2)
-            result.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
-            result.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
-            result.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
-            result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+                // 3 level depth (should now be null as recursiveDepth:2)
+                testInstance.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
+                testInstance.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
+                testInstance.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
+                testInstance.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+            }
         }
 
         [TestMethod]
         public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepth()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveCollections>(recursiveDepth: 2);
+            InstanceAssertions(RandomValue.Object<ObjectWithRecursiveCollections>(recursiveDepth: 2));
+            InstanceAssertions((ObjectWithRecursiveCollections)RandomValue.Object(typeof(ObjectWithRecursiveCollections), recursiveDepth: 2));
 
-            // 1 level depth
-            result.RecursiveList.ShouldNotBeDefault();
-            result.Int.ShouldNotBeDefault();
+            void InstanceAssertions(ObjectWithRecursiveCollections testInstance)
+            {
+                // 1 level depth
+                testInstance.RecursiveList.ShouldNotBeDefault();
+                testInstance.Int.ShouldNotBeDefault();
 
-            // 2 level depth
-            result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
-            result.RecursiveList[0].Int.ShouldNotBeDefault();
+                // 2 level depth
+                testInstance.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+                testInstance.RecursiveList[0].Int.ShouldNotBeDefault();
 
-            // 3 level depth (should now be null as recursiveDepth:2)
-            result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
-            result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+                // 3 level depth (should now be null as recursiveDepth:2)
+                testInstance.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+                testInstance.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+            }
         }
 
         [TestMethod]
         public void RandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveProperty>(new RandomValueSettings { RecursiveDepth = 2 });
+            InstanceAssertions(RandomValue.Object<ObjectWithRecursiveProperty>(new RandomValueSettings { RecursiveDepth = 2 }));
+            InstanceAssertions((ObjectWithRecursiveProperty)RandomValue.Object(typeof(ObjectWithRecursiveProperty), new RandomValueSettings { RecursiveDepth = 2 }));
 
-            // 1 level depth
-            result.RecursiveProperty.ShouldNotBeDefault();
-            result.RecursiveProperty2.ShouldNotBeDefault();
+            void InstanceAssertions(ObjectWithRecursiveProperty testInstance)
+            {
+                // 1 level depth
+                testInstance.RecursiveProperty.ShouldNotBeDefault();
+                testInstance.RecursiveProperty2.ShouldNotBeDefault();
 
-            // 2 level depth
-            result.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
-            result.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
+                // 2 level depth
+                testInstance.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
+                testInstance.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
 
-            // 3 level depth (should now be null as recursiveDepth:2)
-            result.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
-            result.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
-            result.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
-            result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+                // 3 level depth (should now be null as recursiveDepth:2)
+                testInstance.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
+                testInstance.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
+                testInstance.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
+                testInstance.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+            }
         }
 
         [TestMethod]
         public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
         {
-            var result = RandomValue.Object<ObjectWithRecursiveCollections>(new RandomValueSettings { RecursiveDepth = 2 });
+            InstanceAssertions(RandomValue.Object<ObjectWithRecursiveCollections>(new RandomValueSettings { RecursiveDepth = 2 }));
+            InstanceAssertions((ObjectWithRecursiveCollections)RandomValue.Object(typeof(ObjectWithRecursiveCollections), new RandomValueSettings { RecursiveDepth = 2 }));
 
-            // 1 level depth
-            result.RecursiveList.ShouldNotBeDefault();
-            result.Int.ShouldNotBeDefault();
+            void InstanceAssertions(ObjectWithRecursiveCollections testInstance)
+            {
+                // 1 level depth
+                testInstance.RecursiveList.ShouldNotBeDefault();
+                testInstance.Int.ShouldNotBeDefault();
 
-            // 2 level depth
-            result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
-            result.RecursiveList[0].Int.ShouldNotBeDefault();
+                // 2 level depth
+                testInstance.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+                testInstance.RecursiveList[0].Int.ShouldNotBeDefault();
 
-            // 3 level depth (should now be null as recursiveDepth:2)
-            result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
-            result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+                // 3 level depth (should now be null as recursiveDepth:2)
+                testInstance.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+                testInstance.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+            }
         }
 
         [TestMethod]
@@ -231,8 +279,7 @@ namespace RandomTestValues.Tests
             var decimal2WasNullAtleastOnce = false;
             var double2WasNullAtleastOnce = false;
             var enumWasNullAtleastOnce = false;
-
-
+            
             var settings = new RandomValueSettings { IncludeNullAsPossibleValueForNullables = true };
 
             for (int n = 0; n < 100; n++)
@@ -382,6 +429,5 @@ namespace RandomTestValues.Tests
 
             //result.CircularType2.CircularType1.CircularType2.ShouldEqual(null);
         }
-
     }
 }

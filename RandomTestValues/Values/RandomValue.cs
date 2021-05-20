@@ -274,24 +274,34 @@ namespace RandomTestValues
         {
             return PropertyTypeIsRecursive<T>(property); // || PropertyTypeIsCircular<T>(property);
         }
-        
+
+        private static bool PropertyTypeIsRecursiveOrCircular(Type type, PropertyInfo property)
+        {
+            return PropertyTypeIsRecursive(type, property);
+        }
+
         private static bool PropertyTypeIsRecursive<T>(PropertyInfo property) where T : new()
+        {
+            return PropertyTypeIsRecursive(typeof(T), property);
+        }
+
+        private static bool PropertyTypeIsRecursive(Type type, PropertyInfo property)
         {
             var propertyType = property.PropertyType;
 
-            if (propertyType == typeof(T))
+            if (propertyType == type)
             {
                 return true;
-            }            
+            }
             if (IsSupportedCollection(propertyType))
             {
                 var collectionType = GetSupportedCollectionType(propertyType);
-                return collectionType.Contains(typeof(T));
+                return collectionType.Contains(type);
             }
             if (IsNullableType(propertyType))
             {
                 var underlyingType = Nullable.GetUnderlyingType(propertyType);
-                return underlyingType == typeof(T);
+                return underlyingType == type;
             }
 
             return false;
