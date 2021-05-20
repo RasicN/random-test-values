@@ -10,9 +10,9 @@ namespace RandomTestValues
         }
 
         /// <summary>
-        /// Use for getting a random DateTimes for your unit tests. Always returns a date in the past. 
+        /// Use for getting a random DateTimes for your unit tests. 
         /// </summary>
-        /// <returns>A random DateTime</returns>
+        /// <returns>A random DateTime between the inclusive minDateTime value and the exclusive maxDateTime value.</returns>
         public static DateTime DateTime(DateTime? minDateTime = null, DateTime? maxDateTime = null)
         {
             if (minDateTime == null)
@@ -25,17 +25,12 @@ namespace RandomTestValues
                 maxDateTime = System.DateTime.Now;
             }
 
-            var timeSinceStartOfDateTime = maxDateTime.Value - minDateTime.Value;
-            var timeInHoursSinceStartOfDateTime = (int)timeSinceStartOfDateTime.TotalHours;
-            var hoursToSubtract = Int(timeInHoursSinceStartOfDateTime) * -1;
-            var timeToReturn = maxDateTime.Value.AddHours(hoursToSubtract);
+            var timeBetween = maxDateTime.Value - minDateTime.Value;
+            var hoursBetween = timeBetween.TotalHours;
 
-            if (timeToReturn > minDateTime.Value && timeToReturn < maxDateTime.Value)
-            {
-                return timeToReturn;
-            }
-
-            return System.DateTime.Now;
+            return hoursBetween <= 1.0
+                ? minDateTime.Value
+                : minDateTime.Value.AddHours(Int((int)hoursBetween, 1));
         }
     }
 }
