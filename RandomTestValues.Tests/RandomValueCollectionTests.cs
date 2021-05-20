@@ -102,108 +102,177 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void NullableValuesWillBePopulatedWithCollections()
         {
-            var listOfNullableInt = RandomValue.List<int?>(25);
-            var int1 = listOfNullableInt.ElementAt(0);
-            var int2 = listOfNullableInt.ElementAt(1);
+            CollectionAssertions(RandomValue.List<int?>(25));
+            CollectionAssertions(RandomValue.List(typeof(int?), 25).Cast<int?>().ToArray());
 
-            listOfNullableInt.All(x => x.HasValue).ShouldBeTrue();
+            void CollectionAssertions(IList<int?> collection)
+            {
+                var int1 = collection.ElementAt(0);
+                var int2 = collection.ElementAt(1);
 
-            int1.ShouldNotEqual(int2);
+                collection.All(x => x.HasValue).ShouldBeTrue();
+
+                int1.ShouldNotEqual(int2);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnADifferentCollectionEachTime()
         {
-            var stringCollection1 = RandomValue.Collection<string>();
-            var stringCollection2 = RandomValue.Collection<string>();
+            StringCollectionAssertions(RandomValue.Collection<string>(), RandomValue.Collection<string>());
+            StringCollectionAssertions(
+                RandomValue.Collection(typeof(string)).Cast<string>().ToArray(), 
+                RandomValue.Collection(typeof(string)).Cast<string>().ToArray());
 
-            var intCollection1 = RandomValue.Collection<int>();
-            var intCollection2 = RandomValue.Collection<int>();
+            IntCollectionAssertions(RandomValue.Collection<int>(), RandomValue.Collection<int>());
+            IntCollectionAssertions(
+                RandomValue.Collection(typeof(int)).Cast<int>().ToArray(), 
+                RandomValue.Collection(typeof(int)).Cast<int>().ToArray());
 
-            stringCollection1.ShouldNotEqual(stringCollection2);
-            intCollection1.ShouldNotEqual(intCollection2);
+            void StringCollectionAssertions(ICollection<string> stringCollection1, ICollection<string> stringCollection2)
+            {
+                stringCollection1.ShouldNotEqual(stringCollection2);
+            }
+
+            void IntCollectionAssertions(ICollection<int> intCollection1, ICollection<int> intCollection2)
+            {
+                intCollection1.ShouldNotEqual(intCollection2);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnARandomCollectionOfTheSpecifiedSize()
         {
-            var stringCollection = RandomValue.Collection<string>(25);
+            CollectionAssertions(RandomValue.Collection<string>(25));
+            CollectionAssertions(RandomValue.Collection(typeof(string), 25).Cast<string>().ToArray());
 
-            stringCollection.Count.ShouldEqual(25);
+            void CollectionAssertions(ICollection<string> stringCollection)
+            {
+                stringCollection.Count.ShouldEqual(25);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnADifferentICollectionEachTime()
         {
-            var stringCollection1 = RandomValue.ICollection<string>();
-            var stringCollection2 = RandomValue.ICollection<string>();
+            StringCollectionAssertions(RandomValue.ICollection<string>(), RandomValue.ICollection<string>());
+            StringCollectionAssertions(
+                RandomValue.ICollection(typeof(string)).Cast<string>().ToArray(),
+                RandomValue.ICollection(typeof(string)).Cast<string>().ToArray());
 
-            var intCollection1 = RandomValue.ICollection<int>();
-            var intCollection2 = RandomValue.ICollection<int>();
+            IntCollectionAssertions(RandomValue.ICollection<int>(), RandomValue.ICollection<int>());
+            IntCollectionAssertions(
+                RandomValue.ICollection(typeof(int)).Cast<int>().ToArray(),
+                RandomValue.ICollection(typeof(int)).Cast<int>().ToArray());
 
-            stringCollection1.ShouldNotEqual(stringCollection2);
-            intCollection1.ShouldNotEqual(intCollection2);
+            void StringCollectionAssertions(ICollection<string> stringCollection1, ICollection<string> stringCollection2)
+            {
+                stringCollection1.ShouldNotEqual(stringCollection2);
+            }
+
+            void IntCollectionAssertions(ICollection<int> intCollection1, ICollection<int> intCollection2)
+            {
+                intCollection1.ShouldNotEqual(intCollection2);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnARandomICollectionOfTheSpecifiedSize()
         {
-            var stringCollection = RandomValue.ICollection<string>(25);
+            CollectionAssertions(RandomValue.ICollection<string>(25));
+            CollectionAssertions(RandomValue.ICollection(typeof(string), 25).Cast<string>().ToArray());
 
-            stringCollection.Count.ShouldEqual(25);
+            void CollectionAssertions(ICollection<string> stringCollection)
+            {
+                stringCollection.Count.ShouldEqual(25);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnADifferentIListEachTime()
         {
-            var stringList1 = RandomValue.IList<string>();
-            var stringList2 = RandomValue.IList<string>();
+            StringCollectionAssertions(RandomValue.IList<string>(), RandomValue.IList<string>());
+            StringCollectionAssertions(
+                RandomValue.IList(typeof(string)).Cast<string>().ToArray(),
+                RandomValue.IList(typeof(string)).Cast<string>().ToArray());
 
-            var intList1 = RandomValue.IList<int>();
-            var intList2 = RandomValue.IList<int>();
+            IntCollectionAssertions(RandomValue.IList<int>(), RandomValue.IList<int>());
+            IntCollectionAssertions(
+                RandomValue.IList(typeof(int)).Cast<int>().ToArray(),
+                RandomValue.IList(typeof(int)).Cast<int>().ToArray());
 
-            stringList1.ShouldNotEqual(stringList2);
-            intList1.ShouldNotEqual(intList2);
+            void StringCollectionAssertions(IList<string> stringList1, IList<string> stringList2)
+            {
+                stringList1.ShouldNotEqual(stringList2);
+            }
+
+            void IntCollectionAssertions(IList<int> intList1, IList<int> intList2)
+            {
+                intList1.ShouldNotEqual(intList2);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnARandomIListOfTheSpecifiedSize()
         {
-            var enumCollection = RandomValue.IList<TestEnum>(25);
+            CollectionAssertions(RandomValue.IList<TestEnum>(25));
+            CollectionAssertions(RandomValue.IList(typeof(TestEnum), 25).Cast<TestEnum>().ToArray());
 
-            enumCollection.Count.ShouldEqual(25);
-            enumCollection.First().ShouldBeType<TestEnum>();
+            void CollectionAssertions(ICollection<TestEnum> enumCollection)
+            {
+                enumCollection.Count.ShouldEqual(25);
+                enumCollection.First().ShouldBeType<TestEnum>();
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnADifferentListEachTime()
         {
-            var stringList1 = RandomValue.List<string>();
-            var stringList2 = RandomValue.List<string>();
+            StringCollectionAssertions(RandomValue.List<string>(), RandomValue.List<string>());
+            StringCollectionAssertions(
+                RandomValue.List(typeof(string)).Cast<string>().ToArray(),
+                RandomValue.List(typeof(string)).Cast<string>().ToArray());
 
-            var intList1 = RandomValue.List<int>();
-            var intList2 = RandomValue.List<int>();
+            IntCollectionAssertions(RandomValue.List<int>(), RandomValue.List<int>());
+            IntCollectionAssertions(
+                RandomValue.List(typeof(int)).Cast<int>().ToArray(),
+                RandomValue.List(typeof(int)).Cast<int>().ToArray());
 
-            stringList1.ShouldNotEqual(stringList2);
-            intList1.ShouldNotEqual(intList2);
+            void StringCollectionAssertions(IList<string> stringList1, IList<string> stringList2)
+            {
+                stringList1.ShouldNotEqual(stringList2);
+            }
+
+            void IntCollectionAssertions(IList<int> intList1, IList<int> intList2)
+            {
+                intList1.ShouldNotEqual(intList2);
+            }
         }
 
         [TestMethod]
         public void RandomCollectionOfTypeShouldReturnARandomListWithinTheSpecifiedSize()
         {
-            var listOfEnums = RandomValue.List<TestEnum>(25);
+            CollectionAssertions(RandomValue.List<TestEnum>(25));
+            CollectionAssertions(RandomValue.List(typeof(TestEnum), 25).Cast<TestEnum>().ToArray());
 
-            listOfEnums.Count.ShouldEqual(25);
-            listOfEnums.First().ShouldBeType<TestEnum>();
+            void CollectionAssertions(ICollection<TestEnum> listOfEnums)
+            {
+                listOfEnums.Count.ShouldEqual(25);
+                listOfEnums.First().ShouldBeType<TestEnum>();
+            }
         }
 
         [TestMethod]
         public void RandomIEnumerableShouldReturnARandomNumberOfItems()
         {
-            var randomEnums = RandomValue.IEnumerable<TestEnum>();
+            CollectionAssertions(RandomValue.IEnumerable<TestEnum>());
+            CollectionAssertions(RandomValue.IEnumerable(typeof(TestEnum)).Cast<TestEnum>());
 
-            randomEnums.First().ShouldBeType<TestEnum>();
-            randomEnums.Count().ShouldBeInRange(1, 10);
+            void CollectionAssertions(IEnumerable<TestEnum> randomEnums)
+            {
+                randomEnums.First().ShouldBeType<TestEnum>();
+                randomEnums.Count().ShouldBeInRange(1, 10);
+            }
         }
 
         [TestMethod]
@@ -228,196 +297,273 @@ namespace RandomTestValues.Tests
         [TestMethod]
         public void RandomIEnumerableShouldReturnARandomNumberOfItemsWithAMaximumOf1000()
         {
-            var length = 1000;
+            const int length = 1000;
 
-            var randomEnums = RandomValue.IEnumerable<TestEnum>(length);
+            CollectionAssertions(RandomValue.IEnumerable<TestEnum>(length));
+            CollectionAssertions(RandomValue.IEnumerable(typeof(TestEnum), length).Cast<TestEnum>());
 
-            randomEnums.First().ShouldBeType<TestEnum>();
-            randomEnums.Count().ShouldEqual(length);
+            void CollectionAssertions(IEnumerable<TestEnum> randomEnums)
+            {
+                randomEnums.First().ShouldBeType<TestEnum>();
+                randomEnums.Count().ShouldEqual(length);
+            }
         }
 
         [TestMethod]
         public void RandomLazyIEnumerableShouldReturnALazyRandomCollection()
         {
-            var randomCollectionOfBrendans = RandomValue.LazyIEnumerable<long>();
+            CollectionAssertions(RandomValue.LazyIEnumerable<long>());
+            CollectionAssertions(RandomValue.LazyIEnumerable(typeof(long)).Cast<long>());
 
-            var randomBrendans = randomCollectionOfBrendans.Take(10);
+            void CollectionAssertions(IEnumerable<long> collection)
+            {
+                const int count = 10;
 
-            randomBrendans.Count().ShouldEqual(10);
-            randomBrendans.First().ShouldBeType<long>();
-            randomBrendans.First().ShouldNotEqual(randomBrendans.Last());
+                var randomLongs = collection.Take(count);
+
+                randomLongs.Count().ShouldEqual(count);
+                randomLongs.First().ShouldBeType<long>();
+                randomLongs.First().ShouldNotEqual(randomLongs.Last());
+            }
         }
 
         [TestMethod]
         public void RandomLazyIEnumerableShouldReturnLazyEnum()
         {
-            var randomCollectionOfTestEnums = RandomValue.LazyIEnumerable<TestEnum>();
+            CollectionAssertions(RandomValue.LazyIEnumerable<TestEnum>());
+            CollectionAssertions(RandomValue.LazyIEnumerable(typeof(TestEnum)).Cast<TestEnum>());
 
-            var randomEnums = randomCollectionOfTestEnums.Take(1000);
+            void CollectionAssertions(IEnumerable<TestEnum> collection)
+            {
+                var randomEnums = collection.Take(1000);
 
-            randomEnums.Count().ShouldEqual(1000);
+                randomEnums.Count().ShouldEqual(1000);
 
-            randomEnums.Where(x => x == TestEnum.More).ShouldNotBeEmpty();
-            randomEnums.Where(x => x == TestEnum.Most).ShouldNotBeEmpty();
-            randomEnums.Where(x => x == TestEnum.Mostest).ShouldNotBeEmpty();
-            randomEnums.Where(x => x == TestEnum.Mostestest).ShouldNotBeEmpty();
+                randomEnums.Where(x => x == TestEnum.More).ShouldNotBeEmpty();
+                randomEnums.Where(x => x == TestEnum.Most).ShouldNotBeEmpty();
+                randomEnums.Where(x => x == TestEnum.Mostest).ShouldNotBeEmpty();
+                randomEnums.Where(x => x == TestEnum.Mostestest).ShouldNotBeEmpty();
+            }
         }
 
         [TestMethod]
         public void RandomLazyIEnumerableShouldReturnLazyObject()
         {
-            var randomCollectionOfTestObjects = RandomValue.LazyIEnumerable<TestObject>();
+            CollectionAssertions(RandomValue.LazyIEnumerable<TestObject>());
+            CollectionAssertions(RandomValue.LazyIEnumerable(typeof(TestObject)).Cast<TestObject>());
 
-            var randomObjects = randomCollectionOfTestObjects.Take(4);
+            void CollectionAssertions(IEnumerable<TestObject> collection)
+            {
+                const int count = 4;
 
-            randomObjects.Count().ShouldEqual(4);
-            randomObjects.First().RTestObject2List.ShouldNotBeEmpty();
+                var randomObjects = collection.Take(count);
+
+                randomObjects.Count().ShouldEqual(count);
+                randomObjects.First().RTestObject2List.ShouldNotBeEmpty();
+            }
         }
 
         [TestMethod]
-        public void RandomLazyIEnumrableOfIEnumerableShouldReturnAEnumerableOfEnumerablesThatIsntLazy()
+        public void RandomLazyIEnumerableOfIEnumerableShouldReturnAEnumerableOfEnumerablesThatIsntLazy()
         {
-            var randomCollectionOfCollections = RandomValue.LazyIEnumerable<IEnumerable<short>>().Take(29);
+            const int count = 29;
+            
+            CollectionAssertions(RandomValue.LazyIEnumerable<IEnumerable<short>>().Take(count));
+            CollectionAssertions(RandomValue.LazyIEnumerable(typeof(IEnumerable<short>)).Cast<IEnumerable<short>>().Take(count));
 
-            randomCollectionOfCollections.Count().ShouldEqual(29);
-
-            randomCollectionOfCollections.First().Count().ShouldBeInRange(0, 10);
+            void CollectionAssertions(IEnumerable<IEnumerable<short>> collection)
+            {
+                collection.Count().ShouldEqual(count);
+                collection.First().Count().ShouldBeInRange(0, 10);
+            }
         }
 
         [TestMethod]
-        public void RandomLazyIEnumrableOfIEnumerableShouldReturnAEnumerableOfList()
+        public void RandomLazyIEnumerableOfIEnumerableShouldReturnAEnumerableOfList()
         {
-            var randomCollectionOfCollections = RandomValue.LazyIEnumerable<List<uint>>().Take(9);
+            const int count = 9;
 
-            randomCollectionOfCollections.Count().ShouldEqual(9);
-            randomCollectionOfCollections.First().ShouldBeType<List<uint>>();
+            CollectionAssertions(RandomValue.LazyIEnumerable<List<uint>>().Take(count));
+            CollectionAssertions(RandomValue.LazyIEnumerable(typeof(List<uint>)).Cast<List<uint>>().Take(count));
 
-            randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
-            randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
+            void CollectionAssertions(IEnumerable<List<uint>> collection)
+            {
+                collection.Count().ShouldEqual(count);
+                collection.First().ShouldBeType<List<uint>>();
+
+                collection.First().Count.ShouldBeInRange(1, 10);
+                collection.Last().Count.ShouldBeInRange(1, 10);
+            }
         }
 
         [TestMethod]
-        public void RandomLazyIEnumrableOfIEnumerableShouldReturnAEnumerableOfCollection()
+        public void RandomLazyIEnumerableOfIEnumerableShouldReturnAEnumerableOfCollection()
         {
-            var randomCollectionOfCollections = RandomValue.LazyIEnumerable<ICollection<uint>>().Take(9);
+            const int count = 9;
+            
+            CollectionAssertions(RandomValue.LazyIEnumerable<ICollection<uint>>().Take(count));
+            CollectionAssertions(RandomValue.LazyIEnumerable(typeof(ICollection<uint>)).Cast<ICollection<uint>>().Take(count));
 
-            randomCollectionOfCollections.Count().ShouldEqual(9);
-            randomCollectionOfCollections.First().ShouldBeType<Collection<uint>>();
+            void CollectionAssertions(IEnumerable<ICollection<uint>> collection)
+            {
+                collection.Count().ShouldEqual(count);
+                collection.First().ShouldBeType<Collection<uint>>();
 
-            randomCollectionOfCollections.First().Count().ShouldBeInRange(1, 10);
-            randomCollectionOfCollections.Last().Count().ShouldBeInRange(1, 10);
+                collection.First().Count.ShouldBeInRange(1, 10);
+                collection.Last().Count.ShouldBeInRange(1, 10);
+            }
         }
 
         [TestMethod]
         public void AllItemsInTheKeysShouldBeUniqueForADictionary()
         {
             //There should be keys from 1 - 127.
-            var length = 127;
+            const int length = 127;
+            
+            DictionaryAssertions(RandomValue.Dictionary<sbyte, Guid>(length));
+            DictionaryAssertions(RandomValue.Dictionary(typeof(sbyte), typeof(Guid), length)
+                .ToDictionary(x => (sbyte)x.Key, y => (Guid)y.Value));
 
-            var result = RandomValue.Dictionary<sbyte, Guid>(length);
-
-            for (int i = 0; i < length; i++)
+            void DictionaryAssertions(IDictionary<sbyte, Guid> dictionary)
             {
-                result.ContainsKey((sbyte)i).ShouldBeTrue();
-            }
+                for (var i = 0; i < length; i++)
+                {
+                    dictionary.ContainsKey((sbyte) i).ShouldBeTrue();
+                }
 
-            result.Keys.First().ShouldBeType<sbyte>();
-            result.Values.First().ShouldBeType<Guid>();
+                dictionary.Keys.First().ShouldBeType<sbyte>();
+                dictionary.Values.First().ShouldBeType<Guid>();
+            }
         }
 
         [TestMethod]
         public void AllItemsInTheKeysShouldBeUniqueForADictionaryNewSettingsObject()
         {
             //There should be keys from 1 - 127.
-            var length = 127;
+            const int length = 127;
+            
+            DictionaryAssertions(RandomValue.Dictionary<sbyte, Guid>(new RandomValueSettings { LengthOfCollection = length }));
+            DictionaryAssertions(RandomValue.Dictionary(typeof(sbyte), typeof(Guid), new RandomValueSettings { LengthOfCollection = length })
+                .ToDictionary(x => (sbyte)x.Key, y => (Guid)y.Value)); 
 
-            var result = RandomValue.Dictionary<sbyte, Guid>(new RandomValueSettings { LengthOfCollection = length });
-
-            for (int i = 0; i < length; i++)
+            void DictionaryAssertions(IDictionary<sbyte, Guid> dictionary)
             {
-                result.ContainsKey((sbyte)i).ShouldBeTrue();
-            }
+                for (var i = 0; i < length; i++)
+                {
+                    dictionary.ContainsKey((sbyte) i).ShouldBeTrue();
+                }
 
-            result.Keys.First().ShouldBeType<sbyte>();
-            result.Values.First().ShouldBeType<Guid>();
+                dictionary.Keys.First().ShouldBeType<sbyte>();
+                dictionary.Values.First().ShouldBeType<Guid>();
+            }
         }
 
         [TestMethod]
         public void TheLengthShouldBeBetween1and10ForDictionary()
         {
-            var result = RandomValue.Dictionary<long, sbyte>();
+            DictionaryAssertions(RandomValue.Dictionary<long, sbyte>());
+            DictionaryAssertions(RandomValue.Dictionary(typeof(long), typeof(sbyte))
+                .ToDictionary(x => (long)x.Key, y => (sbyte)y.Value));
 
-            result.Count().ShouldBeInRange(1, 10);
+            void DictionaryAssertions(IDictionary<long, sbyte> dictionary)
+            {
+                dictionary.Count.ShouldBeInRange(1, 10);
 
-            result.Keys.First().ShouldBeType<long>();
-            result.Values.First().ShouldBeType<sbyte>();
+                dictionary.Keys.First().ShouldBeType<long>();
+                dictionary.Values.First().ShouldBeType<sbyte>();
+            }
         }
 
         [TestMethod]
-        public void TheValuesShouldBeUniquForDictionary()
+        public void TheValuesShouldBeUniqueForDictionary()
         {
-            var result = RandomValue.Dictionary<int, Guid>();
+            DictionaryAssertions(RandomValue.Dictionary<int, Guid>());
+            DictionaryAssertions(RandomValue.Dictionary(typeof(int), typeof(Guid))
+                .ToDictionary(x => (int)x.Key, y => (Guid)y.Value));
 
-            var distinctValues = result.Values.Distinct();
+            void DictionaryAssertions(IDictionary<int, Guid> dictionary)
+            {
+                var distinctValues = dictionary.Values.Distinct();
 
-            distinctValues.Count().ShouldEqual(result.Count());
+                distinctValues.Count().ShouldEqual(dictionary.Count);
 
-            result.Keys.First().ShouldBeType<int>();
-            result.Values.First().ShouldBeType<Guid>();
+                dictionary.Keys.First().ShouldBeType<int>();
+                dictionary.Values.First().ShouldBeType<Guid>();
+            }
         }
 
         [TestMethod]
         public void AllItemsInTheKeysShouldBeUniqueForAIDictionary()
         {
             //There should be keys from 1 - 127.
-            var length = 127;
+            const int length = 127;
 
-            var result = RandomValue.IDictionary<sbyte, short>(length);
+            DictionaryAssertions(RandomValue.IDictionary<sbyte, short>(length));
+            DictionaryAssertions(RandomValue.IDictionary(typeof(sbyte), typeof(short), length)
+                .ToDictionary(x => (sbyte)x.Key, y => (short)y.Value));
 
-            for (int i = 0; i < length; i++)
+            void DictionaryAssertions(IDictionary<sbyte, short> dictionary)
             {
-                result.ContainsKey((sbyte)i).ShouldBeTrue();
-            }
+                for (var i = 0; i < length; i++)
+                {
+                    dictionary.ContainsKey((sbyte) i).ShouldBeTrue();
+                }
 
-            result.Keys.First().ShouldBeType<sbyte>();
-            result.Values.First().ShouldBeType<short>();
+                dictionary.Keys.First().ShouldBeType<sbyte>();
+                dictionary.Values.First().ShouldBeType<short>();
+            }
         }
 
         [TestMethod]
         public void TheLengthShouldBeBetween1and10ForIDictionary()
         {
-            var result = RandomValue.IDictionary<DateTime, sbyte>();
+            DictionaryAssertions(RandomValue.IDictionary<DateTime, sbyte>());
+            DictionaryAssertions(RandomValue.IDictionary(typeof(DateTime), typeof(sbyte))
+                .ToDictionary(x => (DateTime)x.Key, y => (sbyte)y.Value));
 
-            result.Count().ShouldBeInRange(1, 10);
+            void DictionaryAssertions(IDictionary<DateTime, sbyte> dictionary)
+            {
+                dictionary.Count.ShouldBeInRange(1, 10);
 
-            result.Keys.First().ShouldBeType<DateTime>();
-            result.Values.First().ShouldBeType<sbyte>();
+                dictionary.Keys.First().ShouldBeType<DateTime>();
+                dictionary.Values.First().ShouldBeType<sbyte>();
+            }
         }
 
         [TestMethod]
         public void TheValuesShouldBeUniqueForIDictionary()
         {
-            var result = RandomValue.IDictionary<TimeSpan, ulong>();
+            DictionaryAssertions(RandomValue.IDictionary<TimeSpan, ulong>());
+            DictionaryAssertions(RandomValue.IDictionary(typeof(TimeSpan), typeof(ulong))
+                .ToDictionary(x => (TimeSpan)x.Key, y => (ulong)y.Value));
 
-            var distinctValues = result.Values.Distinct();
+            void DictionaryAssertions(IDictionary<TimeSpan, ulong> dictionary)
+            {
+                var distinctValues = dictionary.Values.Distinct();
 
-            distinctValues.Count().ShouldEqual(result.Count());
+                distinctValues.Count().ShouldEqual(dictionary.Count);
 
-            result.Keys.First().ShouldBeType<TimeSpan>();
-            result.Values.First().ShouldBeType<ulong>();
+                dictionary.Keys.First().ShouldBeType<TimeSpan>();
+                dictionary.Values.First().ShouldBeType<ulong>();
+            }
         }
 
         [TestMethod]
         public void TheValuesShouldBeUniqueForIDictionaryWithDateTimeOffset()
         {
-            var result = RandomValue.IDictionary<DateTimeOffset, ulong>();
+            DictionaryAssertions(RandomValue.IDictionary<DateTimeOffset, ulong>());
+            DictionaryAssertions(RandomValue.IDictionary(typeof(DateTimeOffset), typeof(ulong))
+                .ToDictionary(x => (DateTimeOffset)x.Key, y => (ulong)y.Value));
 
-            var distinctValues = result.Values.Distinct();
+            void DictionaryAssertions(IDictionary<DateTimeOffset, ulong> dictionary)
+            {
+                var distinctValues = dictionary.Values.Distinct();
 
-            distinctValues.Count().ShouldEqual(result.Count());
+                distinctValues.Count().ShouldEqual(dictionary.Count);
 
-            result.Keys.First().ShouldBeType<DateTimeOffset>();
-            result.Values.First().ShouldBeType<ulong>();
+                dictionary.Keys.First().ShouldBeType<DateTimeOffset>();
+                dictionary.Values.First().ShouldBeType<ulong>();
+            }
         }
     }
 }
