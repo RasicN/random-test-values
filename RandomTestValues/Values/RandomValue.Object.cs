@@ -23,15 +23,20 @@ namespace RandomTestValues
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
 
-            return Object<T>(genericObject, settings);
+            return RandomizeObject<T>(genericObject, settings);
         }
 
         public static T Object<T>(T instance, int recursiveDepth = 0) where T : class
         {
-            return Object<T>(instance, new RandomValueSettings { RecursiveDepth = recursiveDepth });
+            return RandomizeObject<T>(instance, new RandomValueSettings { RecursiveDepth = recursiveDepth });
         }
 
-        public static T Object<T>(T instance, RandomValueSettings settings)
+        public static T Object<T>(T instance, RandomValueSettings settings) where T : class
+        {
+            return RandomizeObject<T>(instance, settings);
+        }
+
+        private static T RandomizeObject<T>(T instance, RandomValueSettings settings)
         {
             var properties = typeof(T).GetRuntimeProperties().ToArray();
 
