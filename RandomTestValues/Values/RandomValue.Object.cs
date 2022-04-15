@@ -23,6 +23,16 @@ namespace RandomTestValues
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
 
+            return Object<T>(genericObject, settings);
+        }
+
+        public static T Object<T>(T instance, int recursiveDepth = 0) where T : class
+        {
+            return Object<T>(instance, new RandomValueSettings { RecursiveDepth = recursiveDepth });
+        }
+
+        public static T Object<T>(T instance, RandomValueSettings settings)
+        {
             var properties = typeof(T).GetRuntimeProperties().ToArray();
 
             foreach (var prop in properties)
@@ -39,13 +49,18 @@ namespace RandomTestValues
                     continue;
                 }
 
-                var newSettings = new RandomValueSettings { RecursiveDepth = settings.RecursiveDepth - 1, IncludeNullAsPossibleValueForNullables = settings.IncludeNullAsPossibleValueForNullables, LengthOfCollection = settings.LengthOfCollection };
+                var newSettings = new RandomValueSettings
+                {
+                    RecursiveDepth = settings.RecursiveDepth - 1,
+                    IncludeNullAsPossibleValueForNullables = settings.IncludeNullAsPossibleValueForNullables,
+                    LengthOfCollection = settings.LengthOfCollection
+                };
 
                 try
                 {
                     var method = GetMethodCallAssociatedWithType(prop.PropertyType, newSettings);
 
-                    prop.SetValue(genericObject, method, null);
+                    prop.SetValue(instance, method, null);
                 }
                 catch (Exception)
                 {
@@ -53,7 +68,7 @@ namespace RandomTestValues
                 }
             }
 
-            return genericObject;
+            return instance;
         }
     }
 }
