@@ -1,37 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <VersionPrefix>2.0.0</VersionPrefix>
-    <TargetFrameworks>netstandard1.0;net45</TargetFrameworks>
-    <AssemblyName>RandomTestValues</AssemblyName>
-    <PackageId>RandomTestValues</PackageId>
-    <PackageTags>Unit-Testing;TDD</PackageTags>
-    <PackageReleaseNotes>Fixed an issue with RandomFormat.PhoneNumber not returning two random number when called twice in the same process</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/RasicN/random-test-values</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</PackageLicenseUrl>
-    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.0' ">1.6.1</NetStandardImplicitPackageVersion>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>2.0.5.1</Version>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Description>This project is to speed up and clean up unit testing and test driven development by returning random values.</Description>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="Formats\RandomFormat.Email.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="RandomTestValues\bin\Release\netstandard1.0\RandomTestValues.dll">
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PackageId>RandomTestValues</PackageId>
+		<Version>2.1.0.0</Version>
+		<PackageTags>Unit-Testing;TDD</PackageTags>
+		<PackageReleaseNotes>Updating to .netstandard 2.0</PackageReleaseNotes>
+		<PackageIconUrl>https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/RasicN/random-test-values</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</PackageLicenseUrl>
+		<Description>This project is to speed up and clean up unit testing and test driven development by returning random values.</Description>
+	</PropertyGroup>
 
 </Project>
