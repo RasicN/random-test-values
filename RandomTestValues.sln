@@ -5,13 +5,12 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC5329FC-F5B4-4E13-843D-1718E9A0A2DA}"
 	ProjectSection(SolutionItems) = preProject
-		commands.json = commands.json
-		packageNuget.bat = packageNuget.bat
+		.github\workflows\gh-actions.yml = .github\workflows\gh-actions.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomTestValues", "RandomTestValues\RandomTestValues.csproj", "{09B79972-0851-40AD-A13B-8ACF4A4FE515}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomTestValues", "RandomTestValues\RandomTestValues.csproj", "{09B79972-0851-40AD-A13B-8ACF4A4FE515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomTestValues.UnitTests", "RandomTestValues.UnitTests\RandomTestValues.UnitTests.csproj", "{BCD941FD-0A5A-473E-89DF-2C18772EEB0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomTestValues.UnitTests", "RandomTestValues.UnitTests\RandomTestValues.UnitTests.csproj", "{BCD941FD-0A5A-473E-89DF-2C18772EEB0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
