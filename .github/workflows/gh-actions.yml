@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - RasicN-CICD
   pull_request:
     branches:
     - main
