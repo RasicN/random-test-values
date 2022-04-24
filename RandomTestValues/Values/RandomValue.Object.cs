@@ -26,11 +26,25 @@ namespace RandomTestValues
             return RandomizeObject<T>(genericObject, settings);
         }
 
+        /// <summary>
+        /// Randomizes the properties of the given instance and specify the recursive depth (Default value = 0).
+        /// </summary>
+        /// <typeparam name="T">The type of the instance.</typeparam>
+        /// <param name="instance">The instance of the class to have its properties randomized.</param>
+        /// <param name="recursiveDepth">Recursive depth to apply.</param>
+        /// <returns>The same instance with its properties set to random values.</returns>
         public static T Object<T>(T instance, int recursiveDepth = 0) where T : class
         {
             return RandomizeObject<T>(instance, new RandomValueSettings { RecursiveDepth = recursiveDepth });
         }
 
+        /// <summary>
+        /// Randomizes the properties of the given instance and specify the settings to use.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance.</typeparam>
+        /// <param name="instance">The instance of the class to have its properties randomized.</param>
+        /// <param name="settings">The settings to apply.</param>
+        /// <returns>The same instance with its properties set to random values.</returns>
         public static T Object<T>(T instance, RandomValueSettings settings) where T : class
         {
             return RandomizeObject<T>(instance, settings);

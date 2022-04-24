@@ -53,6 +53,48 @@ namespace RandomTestValues.UnitTests
         }
 
         [TestMethod]
+        public void InstanceOfRandomObjectOfSupportedValuesWillBePopulated()
+        {
+            var testClass = new TestObject();
+            RandomValue.Object<TestObject>(testClass);
+
+            testClass.RString.ShouldNotBeDefault();
+            testClass.RDecimal.ShouldNotBeDefault();
+            testClass.RDouble.ShouldNotBeDefault();
+            testClass.RInt.ShouldNotBeDefault();
+            testClass.RCollection.Count.ShouldBeGreaterThan(0);
+            testClass.RCollection2.Count.ShouldBeGreaterThan(0);
+            testClass.RList.Count.ShouldBeGreaterThan(0);
+            testClass.RList2.Count.ShouldBeGreaterThan(0);
+            testClass.TestObject2.ShouldNotBeDefault();
+            testClass.RTestObject2List.Count.ShouldBeGreaterThan(0);
+            testClass.RDateTime.ShouldNotBeDefault();
+            testClass.RTestObject2Collection.Count.ShouldBeGreaterThan(0);
+            testClass.RGuid.ShouldNotBeDefault();
+            testClass.REnumList.Count.ShouldBeGreaterThan(0);
+            testClass.TestObject3.ShouldNotBeDefault();
+            testClass.RInt2.ShouldNotBeDefault();
+            testClass.RString2.ShouldNotBeDefault();
+            testClass.RDecimal2.ShouldNotBeDefault();
+            testClass.RDouble2.ShouldNotBeDefault();
+            testClass.REnumCollection.Count.ShouldBeGreaterThan(0);
+            testClass.Shorts.Any().ShouldBeTrue();
+            testClass.Shorts.Count().ShouldBeInRange(0, 10);
+            testClass.Strings.Length.ShouldBeGreaterThan(0);
+            testClass.RTestObject2Array.Length.ShouldBeGreaterThan(0);
+            testClass.TimeSpan.ShouldNotBeDefault();
+            testClass.DateTimeOffset.ShouldNotEqual(new DateTimeOffset());
+            testClass.RUri.ShouldNotBeDefault();
+
+            var isEnum = ((int)testClass.REnum == (int)TestEnum.More
+                || (int)testClass.REnum == (int)TestEnum.Most
+                || (int)testClass.REnum == (int)TestEnum.Mostest
+                || (int)testClass.REnum == (int)TestEnum.Mostestest);
+
+            isEnum.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public void NullableValuesWillBePopulatedWithObject()
         {
             var testClass = RandomValue.Object<NullableTestObject>();
@@ -163,9 +205,49 @@ namespace RandomTestValues.UnitTests
         }
 
         [TestMethod]
+        public void InstanceOfRandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepth()
+        {
+            var result = new ObjectWithRecursiveProperty(); 
+            RandomValue.Object<ObjectWithRecursiveProperty>(result, recursiveDepth: 2);
+
+            // 1 level depth
+            result.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.ShouldNotBeDefault();
+
+            // 2 level depth
+            result.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
+
+            // 3 level depth (should now be null as recursiveDepth:2)
+            result.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
+            result.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
+            result.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
         public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepth()
         {
             var result = RandomValue.Object<ObjectWithRecursiveCollections>(recursiveDepth: 2);
+
+            // 1 level depth
+            result.RecursiveList.ShouldNotBeDefault();
+            result.Int.ShouldNotBeDefault();
+
+            // 2 level depth
+            result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+            result.RecursiveList[0].Int.ShouldNotBeDefault();
+
+            // 3 level depth (should now be null as recursiveDepth:2)
+            result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+            result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
+        public void InstanceOfRandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepth()
+        {
+            var result = new ObjectWithRecursiveCollections();
+            RandomValue.Object<ObjectWithRecursiveCollections>(result, recursiveDepth: 2);
 
             // 1 level depth
             result.RecursiveList.ShouldNotBeDefault();
@@ -201,9 +283,49 @@ namespace RandomTestValues.UnitTests
         }
 
         [TestMethod]
+        public void InstanceOfRandomObjectWithRecursivePropertyWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
+        {
+            var result = new ObjectWithRecursiveProperty();
+            RandomValue.Object<ObjectWithRecursiveProperty>(result, new RandomValueSettings { RecursiveDepth = 2 });
+
+            // 1 level depth
+            result.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.ShouldNotBeDefault();
+
+            // 2 level depth
+            result.RecursiveProperty.RecursiveProperty.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.ShouldNotBeDefault();
+
+            // 3 level depth (should now be null as recursiveDepth:2)
+            result.RecursiveProperty.RecursiveProperty.RecursiveProperty.ShouldEqual(null);
+            result.RecursiveProperty2.RecursiveProperty2.RecursiveProperty2.ShouldEqual(null);
+            result.RecursiveProperty.RecursiveProperty.Int.ShouldNotBeDefault();
+            result.RecursiveProperty2.RecursiveProperty2.Int.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
         public void RandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
         {
             var result = RandomValue.Object<ObjectWithRecursiveCollections>(new RandomValueSettings { RecursiveDepth = 2 });
+
+            // 1 level depth
+            result.RecursiveList.ShouldNotBeDefault();
+            result.Int.ShouldNotBeDefault();
+
+            // 2 level depth
+            result.RecursiveList[0].RecursiveList.ShouldNotBeDefault();
+            result.RecursiveList[0].Int.ShouldNotBeDefault();
+
+            // 3 level depth (should now be null as recursiveDepth:2)
+            result.RecursiveList[0].RecursiveList[0].RecursiveList.ShouldEqual(null);
+            result.RecursiveList[0].RecursiveList[0].Int.ShouldNotBeDefault();
+        }
+
+        [TestMethod]
+        public void InstanceOfRandomObjectWithRecursiveListWillGenerateChildObjectsToTheSpecifiedDepthWithSettings()
+        {
+            var result = new ObjectWithRecursiveCollections();
+            RandomValue.Object<ObjectWithRecursiveCollections>(result, new RandomValueSettings { RecursiveDepth = 2 });
 
             // 1 level depth
             result.RecursiveList.ShouldNotBeDefault();
