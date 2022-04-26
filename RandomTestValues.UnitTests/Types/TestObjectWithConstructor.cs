@@ -1,4 +1,6 @@
-﻿namespace RandomTestValues.UnitTests.Types
+﻿using System;
+
+namespace RandomTestValues.UnitTests.Types
 {
     public class TestObjectWithConstructor
     {
@@ -10,6 +12,7 @@
 
         public int TestInt { get; set; }
         public string TestString { get; set; }
+        public Guid TestGuid { get; set; }
 
     }
 }

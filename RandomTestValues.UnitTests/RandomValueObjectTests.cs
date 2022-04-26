@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RandomTestValues.UnitTests.ShouldExtensions;
 using RandomTestValues.UnitTests.Types;
@@ -92,6 +93,19 @@ namespace RandomTestValues.UnitTests
                 || (int)testClass.REnum == (int)TestEnum.Mostestest);
 
             isEnum.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void InstanceOfRandomObjectWithoutAParameterlessConstructorWillBeRandomized()
+        {
+            var testInt = RandomValue.Int();
+            var testString = RandomValue.String();
+            var testClass = new TestObjectWithConstructor(testInt, testString);
+            var result = RandomValue.Object(testClass);
+
+            result.TestInt.Should().NotBe(testInt);
+            result.TestString.Should().NotBe(testString);
+            result.TestGuid.ShouldNotBeDefault();
         }
 
         [TestMethod]

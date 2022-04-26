@@ -84,6 +84,13 @@ The point here is that we don't care about the actual data of `testPerson` we ju
   var randomMyClass = RandomTestValues.Object<MyClass>();
 ```
 
+- Object Instance
+```csharp
+  var myClass = new MyClass();
+  // Note: any property that has a setter will be set even if it previously contained a value.
+  var randomMyClass = RandomTestValues.Object(myClass);
+```
+
 ### Dependencies
 - RandomTestValues
   - System
