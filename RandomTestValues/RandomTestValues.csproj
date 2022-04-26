@@ -3,9 +3,9 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>RandomTestValues</PackageId>
-		<Version>2.1.0.0</Version>
+		<Version>2.1.1.0</Version>
 		<PackageTags>Unit-Testing;TDD</PackageTags>
-		<PackageReleaseNotes>Updating to .netstandard 2.0</PackageReleaseNotes>
+		<PackageReleaseNotes>Introduction of Random.Object using an already existing instance.</PackageReleaseNotes>
 		<PackageIconUrl>https://raw.githubusercontent.com/RasicN/random-test-values/master/random-icon.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/RasicN/random-test-values</PackageProjectUrl>
 		<PackageLicenseUrl>https://github.com/RasicN/random-test-values/blob/master/LICENSE</PackageLicenseUrl>

@@ -23,6 +23,35 @@ namespace RandomTestValues
         {
             var genericObject = (T)Activator.CreateInstance(typeof(T));
 
+            return RandomizeObject<T>(genericObject, settings);
+        }
+
+        /// <summary>
+        /// Randomizes the properties of the given instance and specify the recursive depth (Default value = 0).
+        /// </summary>
+        /// <typeparam name="T">The type of the instance.</typeparam>
+        /// <param name="instance">The instance of the class to have its properties randomized.</param>
+        /// <param name="recursiveDepth">Recursive depth to apply.</param>
+        /// <returns>The same instance with its properties set to random values.</returns>
+        public static T Object<T>(T instance, int recursiveDepth = 0) where T : class
+        {
+            return RandomizeObject<T>(instance, new RandomValueSettings { RecursiveDepth = recursiveDepth });
+        }
+
+        /// <summary>
+        /// Randomizes the properties of the given instance and specify the settings to use.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance.</typeparam>
+        /// <param name="instance">The instance of the class to have its properties randomized.</param>
+        /// <param name="settings">The settings to apply.</param>
+        /// <returns>The same instance with its properties set to random values.</returns>
+        public static T Object<T>(T instance, RandomValueSettings settings) where T : class
+        {
+            return RandomizeObject<T>(instance, settings);
+        }
+
+        private static T RandomizeObject<T>(T instance, RandomValueSettings settings)
+        {
             var properties = typeof(T).GetRuntimeProperties().ToArray();
 
             foreach (var prop in properties)
@@ -39,13 +68,18 @@ namespace RandomTestValues
                     continue;
                 }
 
-                var newSettings = new RandomValueSettings { RecursiveDepth = settings.RecursiveDepth - 1, IncludeNullAsPossibleValueForNullables = settings.IncludeNullAsPossibleValueForNullables, LengthOfCollection = settings.LengthOfCollection };
+                var newSettings = new RandomValueSettings
+                {
+                    RecursiveDepth = settings.RecursiveDepth - 1,
+                    IncludeNullAsPossibleValueForNullables = settings.IncludeNullAsPossibleValueForNullables,
+                    LengthOfCollection = settings.LengthOfCollection
+                };
 
                 try
                 {
                     var method = GetMethodCallAssociatedWithType(prop.PropertyType, newSettings);
 
-                    prop.SetValue(genericObject, method, null);
+                    prop.SetValue(instance, method, null);
                 }
                 catch (Exception)
                 {
@@ -53,7 +87,7 @@ namespace RandomTestValues
                 }
             }
 
-            return genericObject;
+            return instance;
         }
     }
 }

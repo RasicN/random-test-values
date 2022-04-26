@@ -270,12 +270,12 @@ namespace RandomTestValues
             return type.GetTypeInfo().IsGenericTypeDefinition ? type.GetTypeInfo().GenericTypeParameters : type.GetTypeInfo().GenericTypeArguments;
         }
 
-        private static bool PropertyTypeIsRecursiveOrCircular<T>(PropertyInfo property) where T : new()
+        private static bool PropertyTypeIsRecursiveOrCircular<T>(PropertyInfo property) 
         {
             return PropertyTypeIsRecursive<T>(property); // || PropertyTypeIsCircular<T>(property);
         }
         
-        private static bool PropertyTypeIsRecursive<T>(PropertyInfo property) where T : new()
+        private static bool PropertyTypeIsRecursive<T>(PropertyInfo property)
         {
             var propertyType = property.PropertyType;
 
